@@ -7,12 +7,4 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <EditorConfigFiles Remove="D:\TravelLine\TravelLine2026\OrderManager\OrderManager\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="D:\TravelLine\TravelLine2026\OrderManager\OrderManager\.editorconfig" />
-  </ItemGroup>
-
 </Project>

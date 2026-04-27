@@ -24,8 +24,10 @@ string ReadInput( string prompt, Func<string, bool> validator )
     while ( true )
     {
         Console.Write( prompt );
-        string? input = Console.ReadLine()?.Trim();
-        if ( input != null && validator( input ) )
+
+        string input = Console.ReadLine()?.Trim() ?? "";
+
+        if ( validator( input ) )
         {
             return input;
         }
