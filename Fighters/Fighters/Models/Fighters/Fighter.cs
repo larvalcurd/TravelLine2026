@@ -19,7 +19,7 @@ public class Fighter : IFighter
     private IArmor _armor;
 
     private int TotalDamage => _race.Damage + _fighterClass.Damage + _weapon.Damage;
-    private int TotalArmor => _armor.Armor + _race.Armor + _fighterClass.Armor;
+    private int TotalArmor => _armor.Armor + _race.Armor;
 
     private const double CritChance = 0.2;
     private const double CritMultiplier = 2.0;
