@@ -1,8 +1,7 @@
 namespace Fighters.Models.Fighters;
 
-public interface IFighter
+public interface IFighter : INamed
 {
-    string Name { get; }
     int MaxHealth { get; }
     int CurrentHealth { get; }
     bool IsAlive { get; }
