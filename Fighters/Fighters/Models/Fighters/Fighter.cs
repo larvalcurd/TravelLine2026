@@ -23,6 +23,14 @@ public class Fighter : IFighter
 
     private const double CritChance = 0.2;
     private const double CritMultiplier = 2.0;
+    private const double MinDamageMultiplier = 0.8;
+    private const double MaxDamageMultiplier = 1.1;
+
+    private static double GetRandomDamageMultiplier()
+    {
+        return Random.Shared.NextDouble() * ( MaxDamageMultiplier - MinDamageMultiplier ) + MinDamageMultiplier;
+    }
+
     public Fighter( string name, IRace race, IFighterClass fighterClass, IWeapon weapon, IArmor armor )
     {
         Name = name;
@@ -38,16 +46,18 @@ public class Fighter : IFighter
     public AttackReport Attack( IFighter target )
     {
         int baseDamage = TotalDamage;
-        double multiplier = Random.Shared.NextDouble() * ( 1.1 - 0.8 ) + 0.8;
+        double multiplier = GetRandomDamageMultiplier();
         int finalDamage = ( int )Math.Round( baseDamage * multiplier );
-        bool wasCritical = false;
-        if ( Random.Shared.NextDouble() < CritChance )
+        bool wasCritical = Random.Shared.NextDouble() < CritChance;
+
+        if ( wasCritical )
         {
-            wasCritical = true;
             finalDamage = ( int )( finalDamage * CritMultiplier );
         }
+
         int actualDamage = target.TakeDamage( finalDamage );
-        AttackReport report = new AttackReport(
+
+        return new(
             Name,
             target.Name,
             wasCritical,
@@ -56,17 +66,12 @@ public class Fighter : IFighter
             baseDamage,
             multiplier
         );
-        return report;
     }
 
     public int TakeDamage( int damage )
     {
         int takenDamage = Math.Max( damage - TotalArmor, 0 );
-        CurrentHealth -= takenDamage;
-        if ( CurrentHealth < 0 )
-        {
-            CurrentHealth = 0;
-        }
+        CurrentHealth = Math.Max( CurrentHealth - takenDamage, 0 );
         return takenDamage;
     }
 
