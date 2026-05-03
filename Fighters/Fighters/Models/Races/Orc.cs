@@ -1,11 +1,10 @@
-namespace Fighters.Models.Races
+namespace Fighters.Models.Races;
+
+public class Orc : IRace
 {
-    public class Orc : IRace
-    {
-        public string Name => "Orc";
-        public int Damage => 1;
-        public int Health => 100;
-        public int Armor => 0;
-        public int Initiative => 0;
-    }
+    public string Name => "Orc";
+    public int Damage => 1;
+    public int Health => 100;
+    public int Armor => 0;
+    public int Initiative => 0;
 }

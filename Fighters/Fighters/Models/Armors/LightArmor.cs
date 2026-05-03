@@ -1,8 +1,7 @@
-namespace Fighters.Models.Armors
+namespace Fighters.Models.Armors;
+
+public class LightArmor : IArmor
 {
-    public class LightArmor : IArmor
-    {
-        public string Name => "Light Armor";
-        public int Armor => 20;
-    }
+    public string Name => "Light Armor";
+    public int Armor => 20;
 }

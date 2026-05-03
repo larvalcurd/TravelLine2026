@@ -1,7 +1,6 @@
-namespace Fighters.Models
+namespace Fighters.Models;
+
+public interface INamed
 {
-    public interface INamed
-    {
-        public string Name { get; }
-    }
+    public string Name { get; }
 }

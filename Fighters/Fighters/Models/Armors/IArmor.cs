@@ -1,7 +1,6 @@
-namespace Fighters.Models.Armors
+namespace Fighters.Models.Armors;
+
+public interface IArmor : INamed
 {
-    public interface IArmor : INamed
-    {
-        public int Armor { get; }
-    }
+    public int Armor { get; }
 }
