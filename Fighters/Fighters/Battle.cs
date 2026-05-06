@@ -4,7 +4,9 @@ namespace Fighters;
 
 public class Battle
 {
-    public void Start( List<IFighter> fighters )
+    private const int MinInitiativeRoll = 1;
+    private const int MaxInitiativeRollExclusive = 21;
+    public static void Start( List<IFighter> fighters )
     {
         if ( fighters.Count < 2 )
         {
@@ -16,15 +18,17 @@ public class Battle
 
         int round = 1;
 
-        while ( fighters.Count( f => f.IsAlive ) > 1 )
+        List<IFighter> aliveFighters = [ .. fighters ];
+
+        while ( aliveFighters.Count > 1 )
         {
             Console.WriteLine( $"\n===== Round {round} =====" );
 
-            List<IFighter> roundQueue = GetRoundQueue( fighters );
+            List<IFighter> roundQueue = GetRoundQueue( aliveFighters );
 
             Console.WriteLine( "Initiative order: " + string.Join( ", ", roundQueue.Select( f => f.Name ) ) );
 
-            List<string> eliminated = ProcessRound( fighters, roundQueue );
+            List<string> eliminated = ProcessRound( aliveFighters, roundQueue );
 
             PrintFighterStatuses( fighters );
             PrintEliminatedFighters( eliminated );
@@ -35,54 +39,48 @@ public class Battle
         PrintWinner( fighters );
     }
 
-    private List<IFighter> GetRoundQueue( List<IFighter> fighters )
+    private static List<IFighter> GetRoundQueue( List<IFighter> aliveFighters )
     {
-        var initiativeRolls = new List<(IFighter fighter, int roll, int bonus, int total)>();
+        List<(IFighter fighter, int total)> initiativeRolls = [];
 
-        foreach ( IFighter fighter in fighters.Where( f => f.IsAlive ) )
+        foreach ( IFighter fighter in aliveFighters )
         {
-            int roll = Random.Shared.Next( 1, 21 );
+            int roll = Random.Shared.Next( MinInitiativeRoll, MaxInitiativeRollExclusive );
             int bonus = fighter.InitiativeBonus;
             int total = roll + bonus;
 
-            initiativeRolls.Add( (fighter, roll, bonus, total) );
+            initiativeRolls.Add( (fighter, total) );
 
             Console.WriteLine( $"{fighter.Name} rolls initiative: {total} (d20 {roll} + bonus {bonus})" );
         }
 
-        return initiativeRolls
-            .OrderByDescending( x => x.total )
-            .Select( x => x.fighter )
-            .ToList();
+        return [ .. initiativeRolls
+            .OrderByDescending( initiativeRoll => initiativeRoll.total )
+            .Select( initiativeRoll => initiativeRoll.fighter ) ];
     }
 
-    private List<string> ProcessRound( List<IFighter> fighters, List<IFighter> roundQueue )
+
+    private static List<string> ProcessRound( List<IFighter> aliveFighters, List<IFighter> roundQueue )
     {
-        List<string> eliminated = new List<string>();
+        List<string> eliminated = [];
 
         foreach ( IFighter fighter in roundQueue )
         {
-            if ( !fighter.IsAlive )
+            if ( !aliveFighters.Contains( fighter ) || aliveFighters.Count <= 1 )
             {
                 continue;
             }
 
-            List<IFighter> potentialTargets = fighters
-                .Where( t => t.IsAlive && t != fighter )
-                .ToList();
-
-            if ( potentialTargets.Count == 0 )
-            {
-                continue;
-            }
+            List<IFighter> potentialTargets = [ .. aliveFighters.Where( target => target != fighter ) ];
 
             IFighter target = potentialTargets[ Random.Shared.Next( potentialTargets.Count ) ];
 
             AttackReport report = fighter.Attack( target );
             PrintReport( report );
 
-            if ( !target.IsAlive && !eliminated.Contains( target.Name ) )
+            if ( !target.IsAlive )
             {
+                aliveFighters.Remove( target );
                 eliminated.Add( target.Name );
             }
         }
@@ -90,7 +88,7 @@ public class Battle
         return eliminated;
     }
 
-    private void RestoreFighters( List<IFighter> fighters )
+    private static void RestoreFighters( List<IFighter> fighters )
     {
         foreach ( IFighter fighter in fighters )
         {
@@ -98,7 +96,7 @@ public class Battle
         }
     }
 
-    private void PrintFighterStatuses( List<IFighter> fighters )
+    private static void PrintFighterStatuses( List<IFighter> fighters )
     {
         Console.WriteLine( "\nFighter status after the round:" );
 
@@ -112,7 +110,7 @@ public class Battle
         }
     }
 
-    private void PrintEliminatedFighters( List<string> eliminated )
+    private static void PrintEliminatedFighters( List<string> eliminated )
     {
         foreach ( string name in eliminated )
         {
@@ -120,21 +118,14 @@ public class Battle
         }
     }
 
-    private void PrintWinner( List<IFighter> fighters )
+    private static void PrintWinner( List<IFighter> aliveFighters )
     {
-        IFighter winner = fighters.FirstOrDefault( f => f.IsAlive );
+        IFighter winner = aliveFighters[ 0 ];
 
-        if ( winner != null )
-        {
-            Console.WriteLine( $"\nWinner: {winner.Name} with {winner.CurrentHealth}/{winner.MaxHealth} HP!" );
-        }
-        else
-        {
-            Console.WriteLine( "\nAll fighters are eliminated! It's a tie!" );
-        }
+        Console.WriteLine( $"\nWinner: {winner.Name} with {winner.CurrentHealth}/{winner.MaxHealth} HP!" );
     }
 
-    private void PrintReport( AttackReport report )
+    private static void PrintReport( AttackReport report )
     {
         Console.WriteLine();
         Console.WriteLine( $"{report.AttackerName} attacks {report.DefenderName}" );

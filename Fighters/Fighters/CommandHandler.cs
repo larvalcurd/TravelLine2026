@@ -2,10 +2,9 @@ using Fighters.Models.Fighters;
 
 namespace Fighters;
 
-public class CommandHandler( List<IFighter> fighters, Battle battle )
+public class CommandHandler( List<IFighter> fighters )
 {
     private readonly List<IFighter> _fighters = fighters;
-    private readonly Battle _battle = battle;
 
     public bool Handle( string command )
     {
@@ -18,7 +17,7 @@ public class CommandHandler( List<IFighter> fighters, Battle battle )
                 return true;
 
             case "fight":
-                _battle.Start( _fighters );
+                Battle.Start( _fighters );
                 return true;
 
             case "list":
