@@ -18,7 +18,7 @@ while ( isRunning )
     switch ( command.ToLower() )
     {
         case "add":
-            IFighter fighter = characterCreator.CreateCharacter();
+            IFighter fighter = CharacterCreator.CreateCharacter();
             fighters.Add( fighter );
             Console.WriteLine( $"Fighter {fighter.Name} added." );
             break;
