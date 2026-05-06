@@ -14,11 +14,8 @@ public class CharacterCreator
         string name = ConsoleHelper.ReadRequiredString( "Enter your character's name:" );
 
         IRace selectedRace = SelectItem( "race", GameData.Races );
-
         IFighterClass selectedClass = SelectItem( "class", GameData.FighterClasses );
-
         IWeapon selectedWeapon = SelectItem( "weapon", GameData.Weapons );
-
         IArmor selectedArmor = SelectItem( "armor", GameData.Armors );
 
         return new Fighter(
