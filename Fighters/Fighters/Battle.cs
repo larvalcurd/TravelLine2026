@@ -36,7 +36,7 @@ public static class Battle
             round++;
         }
 
-        PrintWinner( fighters );
+        PrintWinner( aliveFighters );
     }
 
     private static List<IFighter> GetRoundQueue( List<IFighter> aliveFighters )
