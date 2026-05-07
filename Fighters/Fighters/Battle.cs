@@ -2,7 +2,7 @@ using Fighters.Models.Fighters;
 
 namespace Fighters;
 
-public class Battle
+public static class Battle
 {
     private const int MinInitiativeRoll = 1;
     private const int MaxInitiativeRollExclusive = 21;

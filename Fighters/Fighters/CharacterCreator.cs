@@ -7,7 +7,7 @@ using Fighters.Models.Weapons;
 
 namespace Fighters;
 
-public class CharacterCreator
+public static class CharacterCreator
 {
     public static IFighter CreateCharacter()
     {
