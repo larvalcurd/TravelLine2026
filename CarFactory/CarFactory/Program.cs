@@ -19,7 +19,9 @@ namespace CarFactory
 
             var policies = new Dictionary<Brand, IBrandCompatibilityPolicy>
             {
-                { Brand.Tesla, new TeslaCompatibilityPolicy() }
+                { Brand.Tesla, new TeslaCompatibilityPolicy() },
+                { Brand.Toyota, new ToyotaCompatibilityPolicy() },
+                { Brand.BMW, new BmwCompatibilityPolicy() }
             };
 
             var menu = new ConsoleMenu();
