@@ -4,14 +4,25 @@ using CarFactory.Factories;
 
 namespace CarFactory.Services
 {
-    public class CarConfigurator( IReadOnlyDictionary<Brand, ICarFactory> factories, CarPerformanceCalculator calculator )
+    public class CarConfigurator(
+        IReadOnlyDictionary<Brand, ICarFactory> factories,
+        CarPerformanceCalculator calculator,
+        IReadOnlyDictionary<Brand, IBrandCompatibilityPolicy>? policies = null )
     {
-        private readonly IReadOnlyDictionary<Brand, ICarFactory> _factories = factories;
-        private readonly CarPerformanceCalculator _calculator = calculator;
-
+        private readonly IReadOnlyDictionary<Brand, ICarFactory> _factories = factories ?? throw new ArgumentNullException( nameof( factories ) );
+        private readonly IReadOnlyDictionary<Brand, IBrandCompatibilityPolicy>? _policies = policies;
+        private readonly CarPerformanceCalculator _calculator = calculator ?? throw new ArgumentNullException( nameof( calculator ) );
 
         public Car Configure( CarConfiguration configuration )
         {
+            if ( _policies != null && _policies.TryGetValue( configuration.Brand, out IBrandCompatibilityPolicy? policy ) )
+            {
+                if ( !policy.IsSupported( configuration ) )
+                {
+                    throw new InvalidOperationException( policy.GetUnsupportedReason( configuration ) );
+                }
+            }
+
             if ( !_factories.TryGetValue( configuration.Brand, out ICarFactory? factory ) )
             {
                 throw new InvalidOperationException( $"Factory for brand '{configuration.Brand}' is not registered." );

@@ -13,8 +13,6 @@ namespace CarFactory.Factories
         {
             return type switch
             {
-                EngineType.Petrol => new PetrolEngine( "Tesla Petrol Concept Engine", 210, 30 ),
-                EngineType.Diesel => new DieselEngine( "Tesla Diesel Concept Engine", 190, 25 ),
                 EngineType.Electric => new ElectricEngine( "Tesla Electric Engine", 420, 65 ),
                 _ => throw new ArgumentOutOfRangeException( nameof( type ), type, "Unknown engine type." )
             };
@@ -24,7 +22,6 @@ namespace CarFactory.Factories
         {
             return type switch
             {
-                TransmissionType.Manual => new ManualTransmission( "Tesla Single-Speed Manual Mode", 1 ),
                 TransmissionType.Automatic => new AutomaticTransmission( "Tesla Two-Speed Automatic", 2 ),
                 _ => throw new ArgumentOutOfRangeException( nameof( type ), type, "Unknown transmission type." )
             };
