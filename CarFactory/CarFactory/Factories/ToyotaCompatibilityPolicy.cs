@@ -6,13 +6,15 @@ namespace CarFactory.Factories
     public class ToyotaCompatibilityPolicy : IBrandCompatibilityPolicy
     {
         public bool IsSupported( CarConfiguration configuration ) =>
-            configuration is not { EngineType: EngineType.Electric, TransmissionType: TransmissionType.Manual };
+            GetUnsupportedReason( configuration ) == null;
 
-        public string GetUnsupportedReason( CarConfiguration configuration )
-        {
-            return configuration is { EngineType: EngineType.Electric, TransmissionType: TransmissionType.Manual }
-                ? "Toyota does not support Manual transmission for Electric vehicles."
-                : "Unknown compatibility issue.";
-        }
+        public string? GetUnsupportedReason( CarConfiguration configuration ) =>
+            (configuration.EngineType, configuration.TransmissionType) switch
+            {
+                (EngineType.Electric, TransmissionType.Manual ) =>
+                "Toyota does not support Manual transmission for Electric vehicles.",
+
+                _ => null,
+            };
     }
 }

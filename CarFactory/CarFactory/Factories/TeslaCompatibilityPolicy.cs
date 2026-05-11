@@ -3,31 +3,25 @@ using CarFactory.Domain.Enums;
 
 namespace CarFactory.Factories
 {
-
     public class TeslaCompatibilityPolicy : IBrandCompatibilityPolicy
     {
         public bool IsSupported( CarConfiguration configuration ) =>
-            configuration is { EngineType: EngineType.Electric, TransmissionType: TransmissionType.Automatic };
+            GetUnsupportedReason( configuration ) == null;
 
-        public string GetUnsupportedReason( CarConfiguration configuration )
-        {
-            bool isWrongEngine = configuration.EngineType != EngineType.Electric;
-            bool isWrongTransmission = configuration.TransmissionType != TransmissionType.Automatic;
-
-            return (isWrongEngine, isWrongTransmission) switch
+        public string? GetUnsupportedReason( CarConfiguration configuration ) =>
+            (configuration.EngineType, configuration.TransmissionType) switch
             {
-                (true, true ) =>
+                (not EngineType.Electric, not TransmissionType.Automatic ) =>
                     $"Tesla does not produce {configuration.EngineType} engines. Only Electric is supported. " +
                     $"Additionally, Tesla only offers Automatic transmissions. {configuration.TransmissionType} is not supported.",
 
-                (true, false ) =>
+                (not EngineType.Electric, _ ) =>
                     $"Tesla does not produce {configuration.EngineType} engines. Only Electric is supported.",
 
-                (false, true ) =>
+                (_, not TransmissionType.Automatic ) =>
                     $"Tesla only offers Automatic transmissions. {configuration.TransmissionType} is not supported.",
 
-                _ => "Unknown compatibility issue."
+                _ => null
             };
-        }
     }
 }
