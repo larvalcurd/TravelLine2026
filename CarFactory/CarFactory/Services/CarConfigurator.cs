@@ -13,7 +13,7 @@ namespace CarFactory.Services
         private readonly IReadOnlyDictionary<Brand, IBrandCompatibilityPolicy>? _policies = policies;
         private readonly CarPerformanceCalculator _calculator = calculator ?? throw new ArgumentNullException( nameof( calculator ) );
 
-        public Car Configure( CarConfiguration configuration )
+        public Car CreateCar( CarConfiguration configuration )
         {
             if ( _policies != null && _policies.TryGetValue( configuration.Brand, out IBrandCompatibilityPolicy? policy ) )
             {

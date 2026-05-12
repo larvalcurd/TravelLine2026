@@ -38,7 +38,7 @@ namespace CarFactory
                 configuration = menu.ReadConfiguration();
                 try
                 {
-                    car = configurator.Configure( configuration );
+                    car = configurator.CreateCar( configuration );
                     configurationValid = true;
                 }
                 catch ( InvalidOperationException ex )
