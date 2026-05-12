@@ -3,7 +3,7 @@ using CarFactory.Components.Engine;
 using CarFactory.Components.Steering;
 using CarFactory.Components.Transmission;
 
-namespace CarFactory.Factories
+namespace CarFactory.Factories.TeslaCarFactory
 {
     public sealed class TeslaCarFactory : ICarFactory
     {

@@ -2,7 +2,8 @@ using CarFactory.Components.Body;
 using CarFactory.Components.Engine;
 using CarFactory.Components.Steering;
 using CarFactory.Components.Transmission;
-namespace CarFactory.Factories
+
+namespace CarFactory.Factories.ToyotaCarFactory
 {
     public sealed class ToyotaCarFactory : ICarFactory
     {

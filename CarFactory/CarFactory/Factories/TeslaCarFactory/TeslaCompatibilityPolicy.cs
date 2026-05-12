@@ -2,15 +2,16 @@ using CarFactory.Components.Engine;
 using CarFactory.Components.Transmission;
 using CarFactory.Domain;
 
-namespace CarFactory.Factories
+namespace CarFactory.Factories.TeslaCarFactory
 {
     public class TeslaCompatibilityPolicy : IBrandCompatibilityPolicy
     {
         public bool IsSupported( CarConfiguration configuration ) =>
             GetUnsupportedReason( configuration ) == null;
 
-        public string? GetUnsupportedReason( CarConfiguration configuration ) =>
-            (configuration.EngineType, configuration.TransmissionType) switch
+        public string? GetUnsupportedReason( CarConfiguration configuration )
+        {
+            return (configuration.EngineType, configuration.TransmissionType) switch
             {
                 (not EngineType.Electric, not TransmissionType.Automatic ) =>
                     $"Tesla does not produce {configuration.EngineType} engines. Only Electric is supported. " +
@@ -24,5 +25,6 @@ namespace CarFactory.Factories
 
                 _ => null
             };
+        }
     }
 }

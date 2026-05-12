@@ -1,6 +1,6 @@
 using CarFactory.Domain;
 
-namespace CarFactory.Factories
+namespace CarFactory.Factories.BMWCarFactory
 {
     public class BMWCompatibilityPolicy : IBrandCompatibilityPolicy
     {
