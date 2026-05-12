@@ -2,7 +2,7 @@ using CarFactory.Domain;
 
 namespace CarFactory.Factories
 {
-    public class BmwCompatibilityPolicy : IBrandCompatibilityPolicy
+    public class BMWCompatibilityPolicy : IBrandCompatibilityPolicy
     {
         public bool IsSupported( CarConfiguration configuration ) => true;
 

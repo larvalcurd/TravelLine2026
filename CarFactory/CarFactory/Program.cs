@@ -21,7 +21,7 @@ namespace CarFactory
             {
                 { Brand.Tesla, new TeslaCompatibilityPolicy() },
                 { Brand.Toyota, new ToyotaCompatibilityPolicy() },
-                { Brand.BMW, new BmwCompatibilityPolicy() }
+                { Brand.BMW, new BMWCompatibilityPolicy() }
             };
 
             var menu = new ConsoleMenu();
