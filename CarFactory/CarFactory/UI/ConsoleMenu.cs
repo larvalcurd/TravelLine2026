@@ -1,3 +1,7 @@
+using CarFactory.Components.Body;
+using CarFactory.Components.Engine;
+using CarFactory.Components.Steering;
+using CarFactory.Components.Transmission;
 using CarFactory.Domain;
 using CarFactory.Domain.Enums;
 

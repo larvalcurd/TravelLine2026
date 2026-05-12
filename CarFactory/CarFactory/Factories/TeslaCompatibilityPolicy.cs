@@ -1,5 +1,6 @@
+using CarFactory.Components.Engine;
+using CarFactory.Components.Transmission;
 using CarFactory.Domain;
-using CarFactory.Domain.Enums;
 
 namespace CarFactory.Factories
 {

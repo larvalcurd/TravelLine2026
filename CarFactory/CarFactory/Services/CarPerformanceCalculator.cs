@@ -1,5 +1,7 @@
+using CarFactory.Components.Body;
+using CarFactory.Components.Engine;
+using CarFactory.Components.Transmission;
 using CarFactory.Domain;
-using CarFactory.Domain.Interfaces;
 
 namespace CarFactory.Services
 {

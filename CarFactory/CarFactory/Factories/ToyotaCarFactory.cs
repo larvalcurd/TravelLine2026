@@ -1,10 +1,7 @@
-using CarFactory.Components.Bodies;
-using CarFactory.Components.Engines;
+using CarFactory.Components.Body;
+using CarFactory.Components.Engine;
 using CarFactory.Components.Steering;
-using CarFactory.Components.Transmissions;
-using CarFactory.Domain.Enums;
-using CarFactory.Domain.Interfaces;
-
+using CarFactory.Components.Transmission;
 namespace CarFactory.Factories
 {
     public sealed class ToyotaCarFactory : ICarFactory
