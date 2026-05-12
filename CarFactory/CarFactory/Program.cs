@@ -1,5 +1,6 @@
 ﻿using CarFactory.Domain;
 using CarFactory.Domain.Enums;
+using CarFactory.Extensions;
 using CarFactory.Factories;
 using CarFactory.Services;
 using CarFactory.UI;
@@ -27,7 +28,6 @@ namespace CarFactory
             var menu = new ConsoleMenu();
             var calculator = new CarPerformanceCalculator();
             var configurator = new CarConfigurator( factories, calculator, policies );
-            var printer = new CarConsolePrinter();
 
             CarConfiguration configuration;
             Car? car = null;
@@ -51,7 +51,7 @@ namespace CarFactory
             }
 
             Console.Clear();
-            printer.Print( car! );
+            car!.PrintToConsole();
 
             Console.WriteLine();
             Console.WriteLine( "Press any key to exit..." );

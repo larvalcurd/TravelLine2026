@@ -1,10 +1,10 @@
 using CarFactory.Domain;
 
-namespace CarFactory.Services
+namespace CarFactory.Extensions
 {
-    public sealed class CarConsolePrinter
+    public static class CarDisplayExtension
     {
-        public void Print( Car car )
+        public static void PrintToConsole( this Car car )
         {
             Console.WriteLine();
             Console.WriteLine( "========================================" );
