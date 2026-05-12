@@ -1,13 +1,15 @@
-using CarFactory.Domain.Enums;
-using CarFactory.Domain.Interfaces;
+using CarFactory.Components.Body;
+using CarFactory.Components.Engine;
+using CarFactory.Components.Steering;
+using CarFactory.Components.Transmission;
 
 namespace CarFactory.Factories
 {
     public interface ICarFactory
     {
-        public IEngine CreateEngine( EngineType type );
-        public ITransmission CreateTransmission( TransmissionType type );
-        public IBody CreateBody( BodyType type );
-        public ISteeringPosition CreateSteeringPosition( SteeringPositionType type );
+        IEngine CreateEngine( EngineType type );
+        ITransmission CreateTransmission( TransmissionType type );
+        IBody CreateBody( BodyType type );
+        ISteeringPosition CreateSteeringPosition( SteeringPositionType type );
     }
 }
