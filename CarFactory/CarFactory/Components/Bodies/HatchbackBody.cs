@@ -8,6 +8,5 @@ namespace CarFactory.Components.Bodies
         public BodyType Type => BodyType.Hatchback;
         public string Name { get; } = name;
         public int AerodynamicsFactor { get; } = aerodynamicsFactor;
-
     }
 }
