@@ -1,6 +1,5 @@
 using CarFactory.Domain.Enums;
 
-
 namespace CarFactory.Domain
 {
     public class CarConfiguration
