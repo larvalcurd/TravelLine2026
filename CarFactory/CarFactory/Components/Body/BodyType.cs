@@ -1,4 +1,4 @@
-namespace CarFactory.Domain.Enums
+namespace CarFactory.Components.Body
 {
     public enum BodyType
     {

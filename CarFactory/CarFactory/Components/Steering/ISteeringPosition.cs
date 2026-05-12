@@ -1,6 +1,4 @@
-using CarFactory.Domain.Enums;
-
-namespace CarFactory.Domain.Interfaces
+namespace CarFactory.Components.Steering
 {
     public interface ISteeringPosition
     {

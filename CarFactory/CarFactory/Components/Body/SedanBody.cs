@@ -1,7 +1,4 @@
-using CarFactory.Domain.Enums;
-using CarFactory.Domain.Interfaces;
-
-namespace CarFactory.Components.Bodies
+namespace CarFactory.Components.Body
 {
     public class SedanBody( string name, int aerodynamicsFactor ) : IBody
     {

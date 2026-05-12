@@ -1,4 +1,4 @@
-namespace CarFactory.Domain.Enums
+namespace CarFactory.Components.Steering
 {
     public enum SteeringPositionType
     {

@@ -1,7 +1,4 @@
-using CarFactory.Domain.Enums;
-using CarFactory.Domain.Interfaces;
-
-namespace CarFactory.Components.Transmissions
+namespace CarFactory.Components.Transmission
 {
     public class AutomaticTransmission( string name, int gearCount ) : ITransmission
     {

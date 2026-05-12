@@ -1,7 +1,4 @@
-using CarFactory.Domain.Enums;
-using CarFactory.Domain.Interfaces;
-
-namespace CarFactory.Components.Engines
+namespace CarFactory.Components.Engine
 {
     public class DieselEngine( string name, int horsePower, int baseMaxSpeedBonus ) : IEngine
     {
