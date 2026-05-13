@@ -9,21 +9,18 @@ namespace CarFactory.Factories.TeslaCarFactory
     {
         public CompatibilityResult CheckCompatibility( CarConfiguration configuration )
         {
-            string? reason = (configuration.EngineType, configuration.TransmissionType) switch
-            {
-                (not EngineType.Electric, not TransmissionType.Automatic ) =>
-                    $"Tesla does not produce {configuration.EngineType} engines. Only Electric is supported. " +
-                    $"Additionally, Tesla only offers Automatic transmissions. {configuration.TransmissionType} is not supported.",
-                (not EngineType.Electric, _ ) =>
-                    $"Tesla does not produce {configuration.EngineType} engines. Only Electric is supported.",
-                (_, not TransmissionType.Automatic ) =>
-                    $"Tesla only offers Automatic transmissions. {configuration.TransmissionType} is not supported.",
-                _ => null
-            };
+            string error = string.Empty;
 
-            return reason is null
-                ? CompatibilityResult.Success()
-                : CompatibilityResult.Failure( reason );
+            if ( configuration.EngineType != EngineType.Electric )
+                error += $"Tesla does not produce {configuration.EngineType} engines. Only Electric is supported. ";
+
+            if ( configuration.TransmissionType != TransmissionType.Automatic )
+                error += $"Tesla only offers Automatic transmissions. {configuration.TransmissionType} is not supported.";
+
+            if ( string.IsNullOrEmpty( error ) )
+                return CompatibilityResult.Success();
+
+            return CompatibilityResult.Failure( error.Trim() );
         }
     }
 }

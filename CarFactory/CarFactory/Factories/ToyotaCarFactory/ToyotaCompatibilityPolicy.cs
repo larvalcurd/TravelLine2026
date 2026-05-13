@@ -9,16 +9,18 @@ namespace CarFactory.Factories.ToyotaCarFactory
     {
         public CompatibilityResult CheckCompatibility( CarConfiguration configuration )
         {
-            string? reason = (configuration.EngineType, configuration.TransmissionType) switch
-            {
-                (EngineType.Electric, TransmissionType.Manual ) =>
-                    "Toyota does not support Manual transmission for Electric vehicles.",
-                _ => null
-            };
+            string error = string.Empty;
 
-            return reason is null
-                ? CompatibilityResult.Success()
-                : CompatibilityResult.Failure( reason );
+            if ( configuration.EngineType == EngineType.Electric &&
+                configuration.TransmissionType == TransmissionType.Manual )
+            {
+                error += "Toyota does not support Manual transmission for Electric vehicles.";
+            }
+
+            if ( string.IsNullOrEmpty( error ) )
+                return CompatibilityResult.Success();
+
+            return CompatibilityResult.Failure( error.Trim() );
         }
     }
 }
