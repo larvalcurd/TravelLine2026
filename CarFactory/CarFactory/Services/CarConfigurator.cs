@@ -1,6 +1,7 @@
 using CarFactory.Domain;
 using CarFactory.Domain.Enums;
 using CarFactory.Factories;
+using CarFactory.Factories.Compatibility;
 
 namespace CarFactory.Services
 {
@@ -17,9 +18,10 @@ namespace CarFactory.Services
         {
             if ( _policies != null && _policies.TryGetValue( configuration.Brand, out IBrandCompatibilityPolicy? policy ) )
             {
-                if ( !policy.IsSupported( configuration ) )
+                var result = policy.CheckCompatibility( configuration );
+                if ( !result.IsSupported )
                 {
-                    throw new InvalidOperationException( policy.GetUnsupportedReason( configuration ) );
+                    throw new InvalidOperationException( result.UnsupportedReason );
                 }
             }
 

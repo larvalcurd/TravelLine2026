@@ -1,11 +1,13 @@
 using CarFactory.Domain;
+using CarFactory.Factories.Compatibility;
 
 namespace CarFactory.Factories.BMWCarFactory
 {
     public class BMWCompatibilityPolicy : IBrandCompatibilityPolicy
     {
-        public bool IsSupported( CarConfiguration configuration ) => true;
-
-        public string? GetUnsupportedReason( CarConfiguration configuration ) => null;
+        public CompatibilityResult CheckCompatibility( CarConfiguration configuration )
+        {
+            return CompatibilityResult.Success();
+        }
     }
 }
