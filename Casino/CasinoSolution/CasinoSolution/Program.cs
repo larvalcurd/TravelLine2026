@@ -10,8 +10,6 @@ var random = new Random();
 
 RunGameLoop( balance, random );
 
-return;
-
 static void RunGameLoop( int startBalance, Random random )
 {
     int balance = startBalance;
@@ -37,7 +35,7 @@ static void RunGameLoop( int startBalance, Random random )
 
                 int bet = ReadBet( balance );
                 int randomNumber = GenerateRandomNumber( random );
-                RoundResult roundResult = PlayRound( balance, bet, randomNumber );
+                RoundResult roundResult = CalculateRoundResult( balance, bet, randomNumber );
 
                 PrintRoundResult( roundResult );
                 balance = roundResult.BalanceAfter;
@@ -55,7 +53,7 @@ static void RunGameLoop( int startBalance, Random random )
                 return;
 
             default:
-                Console.WriteLine( "Некорректный выбор. Введите 1, 2 или 3." );
+                Console.WriteLine( "Некорректный выбор." );
                 break;
         }
     }
@@ -73,17 +71,13 @@ static bool IsWinningNumber( int randomNumber )
 
 static int CalculatePayout( int bet, int randomNumber )
 {
-    if ( !IsWinningNumber( randomNumber ) )
-    {
-        return 0;
-    }
     return bet * ( 1 + ( ( Multiplier * randomNumber ) % 17 ) );
 }
 
-static RoundResult PlayRound( int balance, int bet, int randomNumber )
+static RoundResult CalculateRoundResult( int balance, int bet, int randomNumber )
 {
-    int payout = CalculatePayout( bet, randomNumber );
-    bool isWin = payout > 0;
+    bool isWin = IsWinningNumber( randomNumber );
+    int payout = isWin ? CalculatePayout( bet, randomNumber ) : 0;
     int balanceAfter = balance - bet + payout;
 
     return new RoundResult(
