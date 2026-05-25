@@ -11,6 +11,6 @@ namespace BookingApp.Domain.Entities
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
 
-        public ICollection<RoomType> RoomTypes { get; set; } = new List<RoomType>();
+        public ICollection<RoomType> RoomTypes { get; set; } = [];
     }
 }
