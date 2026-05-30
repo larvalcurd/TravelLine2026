@@ -38,8 +38,8 @@ namespace BookingApp.WebApi.Mappings
                 MinPersonCount = dto.MinPersonCount,
                 MaxPersonCount = dto.MaxPersonCount,
                 TotalRoomsCount = dto.TotalRoomsCount,
-                Services = dto.Services.ToList() ?? [],
-                Amenities = dto.Amenities.ToList() ?? []
+                Services = dto.Services?.ToList() ?? [],
+                Amenities = dto.Amenities?.ToList() ?? []
             };
         }
 
