@@ -1,6 +1,5 @@
 using BookingApp.Domain.Entities;
 using BookingApp.Domain.Exceptions;
-using BookingApp.Domain.Interfaces;
 using BookingApp.Domain.Interfaces.Repositories;
 using BookingApp.Domain.Interfaces.Services;
 using BookingApp.Domain.Models;

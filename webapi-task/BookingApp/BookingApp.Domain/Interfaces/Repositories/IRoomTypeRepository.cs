@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using BookingApp.Domain.Entities;
 
 namespace BookingApp.Domain.Interfaces.Repositories
