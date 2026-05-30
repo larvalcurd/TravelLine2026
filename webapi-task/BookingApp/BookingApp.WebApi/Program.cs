@@ -4,11 +4,13 @@ using BookingApp.Infrastructure.Extensions;
 using BookingApp.Infrastructure.Persistence;
 using BookingApp.Infrastructure.Persistence.Seed;
 using BookingApp.WebApi.Middleware;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

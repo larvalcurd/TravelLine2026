@@ -1,26 +1,46 @@
+using System.Net;
+using System.Text.Json;
+using BookingApp.Domain.Exceptions;
+
 namespace BookingApp.WebApi.Middleware
 {
     public class ExceptionHandlingMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next = next;
-
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
-                // Пропускаем запрос дальше по конвейеру к контроллерам
-                await _next(context);
+                await next(context);
             }
             catch (Exception ex)
             {
-                // TODO: Вечером перехватить кастомные исключения (NotFoundException, ValidationException и т.д.)
-                // TODO: Настроить правильные HTTP статус-коды (404, 400) и логирование
-
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                context.Response.ContentType = "application/json";
-
-                await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+                await HandleExceptionAsync(context, ex);
             }
+        }
+
+        private static async Task HandleExceptionAsync(
+            HttpContext context,
+            Exception exception)
+        {
+            context.Response.ContentType = "application/json";
+
+            var statusCode = exception switch
+            {
+                NotFoundException => StatusCodes.Status404NotFound,
+                ValidationException => StatusCodes.Status400BadRequest,
+                NoAvailabilityException => StatusCodes.Status409Conflict,
+                _ => StatusCodes.Status500InternalServerError
+            };
+
+            context.Response.StatusCode = statusCode;
+
+            var response = new
+            {
+                error = exception.Message
+            };
+
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response));
         }
     }
 }
