@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using BookingApp.Domain.Entities;
 using BookingApp.Domain.Interfaces.Repositories;
 using BookingApp.Infrastructure.Persistence;
@@ -46,7 +40,7 @@ namespace BookingApp.Infrastructure.Repositories
 
             if (maxPrice.HasValue)
             {
-                query = query.Where(rt => rt.DailyPrice < maxPrice.Value);
+                query = query.Where(rt => rt.DailyPrice <= maxPrice.Value);
             }
 
             return query.ToList();
@@ -87,7 +81,7 @@ namespace BookingApp.Infrastructure.Repositories
         {
             var entity = _context.RoomTypes.Find(id)
                 ?? throw new InvalidOperationException($"RoomType with id '{id}' was not found.");
-            
+
             _context.RoomTypes.Remove(entity);
             _context.SaveChanges();
         }

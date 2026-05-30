@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="BookingApp.Domain/BookingApp.Domain.csproj" />
+  <Project Path="BookingApp.Infrastructure.Tests/BookingApp.Infrastructure.Tests.csproj" />
   <Project Path="BookingApp.Infrastructure/BookingApp.Infrastructure.csproj" />
   <Project Path="BookingApp.WebApi/BookingApp.WebApi.csproj" />
 </Solution>

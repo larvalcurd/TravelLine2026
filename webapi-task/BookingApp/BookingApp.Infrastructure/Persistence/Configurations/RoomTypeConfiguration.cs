@@ -15,7 +15,7 @@ namespace BookingApp.Infrastructure.Persistence.Configurations
 
             builder.Property(rt => rt.Name).IsRequired().HasMaxLength(200);
             builder.Property(rt => rt.Currency).IsRequired().HasMaxLength(3);
-            builder.Property(rt => rt.DailyPrice).IsRequired(); 
+            builder.Property(rt => rt.DailyPrice).IsRequired().HasPrecision(18, 2); 
             builder.Property(rt => rt.MinPersonCount).IsRequired();
             builder.Property(rt => rt.MaxPersonCount).IsRequired();
             builder.Property(rt => rt.TotalRoomsCount).IsRequired();

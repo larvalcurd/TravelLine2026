@@ -18,8 +18,8 @@ namespace BookingApp.Infrastructure.Persistence.Configurations
             builder.Property(p => p.City).IsRequired().HasMaxLength(100);
             builder.Property(p => p.Address).IsRequired().HasMaxLength(500); 
 
-            builder.Property(p => p.Latitude).IsRequired();
-            builder.Property(p => p.Longitude).IsRequired();
+            builder.Property(p => p.Latitude).IsRequired().HasPrecision(9, 6);
+            builder.Property(p => p.Longitude).IsRequired().HasPrecision(10, 6);
 
             builder.HasMany(p => p.RoomTypes)
                 .WithOne()

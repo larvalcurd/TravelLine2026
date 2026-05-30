@@ -20,7 +20,7 @@ namespace BookingApp.Infrastructure.Persistence.Configurations
             builder.Property(r => r.ArrivalTime).IsRequired();
             builder.Property(r => r.DepartureTime).IsRequired();
 
-            builder.Property(r => r.Total).IsRequired();
+            builder.Property(r => r.Total).IsRequired().HasPrecision(18, 2);
             builder.Property(r => r.Currency).IsRequired().HasMaxLength(3);
 
             builder.Property(r => r.IsCanceled).IsRequired().HasDefaultValue(false);

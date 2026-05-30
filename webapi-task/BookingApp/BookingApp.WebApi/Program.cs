@@ -1,6 +1,9 @@
+using BookingApp.Domain.Interfaces.Services;
+using BookingApp.Domain.Services;
 using BookingApp.Infrastructure.Extensions;
 using BookingApp.Infrastructure.Persistence;
 using BookingApp.Infrastructure.Persistence.Seed;
+using BookingApp.WebApi.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,11 +14,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// TODO: Сервисы
-// builder.Services.AddScoped<IPropertyService, PropertyService>();
-// builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
-// builder.Services.AddScoped<ISearchService, SearchService>();
-// builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 
 var app = builder.Build();
 
@@ -27,8 +29,10 @@ using (var scope = app.Services.CreateScope())
     BookingDbSeeder.Seed(dbContext);
 }
 
-app.UseSwagger();   
-app.UseSwaggerUI(); 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapControllers();
 
