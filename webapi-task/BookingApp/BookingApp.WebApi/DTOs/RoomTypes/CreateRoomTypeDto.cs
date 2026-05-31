@@ -2,9 +2,9 @@ namespace BookingApp.WebApi.DTOs.RoomTypes
 {
     public class CreateRoomTypeDto
     {
-        public string Name { get; set; } = string.Empty;
+        public required string Name { get; set; } = string.Empty;
         public decimal DailyPrice { get; set; }
-        public string Currency { get; set; } = string.Empty;
+        public required string Currency { get; set; } = string.Empty;
         public int MinPersonCount { get; set; }
         public int MaxPersonCount { get; set; }
         public int TotalRoomsCount { get; set; }
