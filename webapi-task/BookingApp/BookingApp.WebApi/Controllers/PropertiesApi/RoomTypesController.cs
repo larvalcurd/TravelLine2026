@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookingApp.WebApi.Controllers.PropertiesApi
 {
     [ApiController]
+    [Produces("application/json")]
     public class RoomTypesController(IRoomTypeService roomTypeService) : ControllerBase
     {
         private readonly IRoomTypeService _roomTypeService = roomTypeService;
@@ -21,6 +22,7 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         }
 
         [HttpPost("api/properties/{propertyId:guid}/roomtypes")]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(RoomTypeDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,6 +43,7 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         }
 
         [HttpPut("api/roomtypes/{id:guid}")]
+        [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

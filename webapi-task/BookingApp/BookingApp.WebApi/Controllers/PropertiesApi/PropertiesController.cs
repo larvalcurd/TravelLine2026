@@ -7,6 +7,7 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
 {
     [ApiController]
     [Route("api/properties")]
+    [Produces("application/json")]
     public class PropertiesController(IPropertyService propertyService) : ControllerBase
     {
         private readonly IPropertyService _propertyService = propertyService;
@@ -30,6 +31,7 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         }
 
         [HttpPost]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(PropertyDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<PropertyDto> Create([FromBody] CreatePropertyDto dto)
@@ -41,12 +43,13 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         }
 
         [HttpPut("{id:guid}")]
+        [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Update(Guid id, [FromBody] UpdatePropertyDto dto)
         {
-            var propertyEntity = dto.ToEntity(id); // Маппинг Update DTO -> Entity
+            var propertyEntity = dto.ToEntity(id);
             _propertyService.Update(id, propertyEntity);
             return NoContent();
         }

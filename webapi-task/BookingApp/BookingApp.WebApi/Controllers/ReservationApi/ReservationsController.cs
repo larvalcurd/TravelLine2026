@@ -7,11 +7,13 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
 {
     [ApiController]
     [Route("api/reservations")]
+    [Produces("application/json")]
     public class ReservationsController(IReservationService reservationService) : ControllerBase
     {
         private readonly IReservationService _reservationService = reservationService;
 
         [HttpPost]
+        [Consumes("application/json")]
         [ProducesResponseType(typeof(ReservationDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

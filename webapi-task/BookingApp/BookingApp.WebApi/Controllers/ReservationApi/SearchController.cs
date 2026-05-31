@@ -7,6 +7,7 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
 {
     [ApiController]
     [Route("api/search")]
+    [Produces("application/json")]
     public class SearchController(ISearchService searchService) : ControllerBase
     {
         [HttpGet]
