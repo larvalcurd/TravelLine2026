@@ -12,6 +12,14 @@ namespace BookingApp.WebApi.Validators
                 .MaximumLength(100);
 
             RuleFor(x => x.ArrivalDate)
+                .NotEmpty()
+                .WithMessage("ArrivalDate is required.");
+
+            RuleFor(x => x.DepartureDate)
+                .NotEmpty()
+                .WithMessage("DepartureDate is required.");
+
+            RuleFor(x => x.ArrivalDate)
                 .LessThan(x => x.DepartureDate)
                 .WithMessage("ArrivalDate must be earlier than DepartureDate.");
 

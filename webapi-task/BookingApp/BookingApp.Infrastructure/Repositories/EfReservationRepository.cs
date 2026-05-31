@@ -66,6 +66,11 @@ namespace BookingApp.Infrastructure.Repositories
                 query = query.Where(r => r.PropertyId == filter.PropertyId.Value);
             }
 
+            if (filter.RoomTypeId.HasValue)
+            {
+                query = query.Where(r => r.RoomTypeId == filter.RoomTypeId.Value);
+            }
+
             if (filter.ArrivalDateFrom.HasValue)
             {
                 query = query.Where(r => r.ArrivalDate >= filter.ArrivalDateFrom.Value);

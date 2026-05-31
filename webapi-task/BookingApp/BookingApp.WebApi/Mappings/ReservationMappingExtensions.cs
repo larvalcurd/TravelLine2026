@@ -15,9 +15,9 @@ namespace BookingApp.WebApi.Mappings
                 PropertyId = dto.PropertyId,
                 RoomTypeId = dto.RoomTypeId,
                 ArrivalDate = dto.ArrivalDate,
-                ArrivalTime = dto.ArrivalTime,
+                ArrivalTime = dto.ArrivalTime!.Value,
                 DepartureDate = dto.DepartureDate,
-                DepartureTime = dto.DepartureTime,
+                DepartureTime = dto.DepartureTime!.Value,
                 GuestName = dto.GuestName,
                 GuestPhoneNumber = dto.GuestPhoneNumber,
                 GuestCount = dto.GuestCount

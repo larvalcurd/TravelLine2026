@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using BookingApp.Domain.Entities;
 using BookingApp.Domain.Interfaces.Services;
 using BookingApp.WebApi.DTOs.Reservations;
 using BookingApp.WebApi.Mappings;

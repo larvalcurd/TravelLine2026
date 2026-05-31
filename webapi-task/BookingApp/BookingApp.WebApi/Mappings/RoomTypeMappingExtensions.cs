@@ -19,8 +19,8 @@ namespace BookingApp.WebApi.Mappings
                 MinPersonCount = rt.MinPersonCount,
                 MaxPersonCount = rt.MaxPersonCount,
                 TotalRoomsCount = rt.TotalRoomsCount,
-                Services = rt.Services ?? [],
-                Amenities = rt.Amenities ?? []
+                Services = rt.Services?.ToList() ?? [],
+                Amenities = rt.Amenities?.ToList() ?? []
             };
         }
 
@@ -57,8 +57,8 @@ namespace BookingApp.WebApi.Mappings
                 MinPersonCount = dto.MinPersonCount,
                 MaxPersonCount = dto.MaxPersonCount,
                 TotalRoomsCount = dto.TotalRoomsCount,
-                Services = dto.Services.ToList() ?? [],
-                Amenities = dto.Amenities.ToList() ?? []
+                Services = dto.Services?.ToList() ?? [],
+                Amenities = dto.Amenities?.ToList() ?? []
             };
         }
     }
