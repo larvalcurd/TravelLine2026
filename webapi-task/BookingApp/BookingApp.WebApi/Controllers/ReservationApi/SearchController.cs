@@ -10,6 +10,8 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
     public class SearchController(ISearchService searchService) : ControllerBase
     {
         [HttpGet]
+        [ProducesResponseType(typeof(IReadOnlyCollection<SearchAvailabilityResultDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<IReadOnlyCollection<SearchAvailabilityResultDto>> Search([FromQuery] SearchAvailabilityQueryDto query)
         {
             var criteria = query.ToCriteria();

@@ -3,14 +3,6 @@ using BookingApp.WebApi.DTOs.Properties;
 using BookingApp.WebApi.Mappings;
 using Microsoft.AspNetCore.Mvc;
 
-/*
-GET    /api/properties
-GET    /api/properties/{id}
-POST   /api/properties
-PUT    /api/properties/{id}
-DELETE /api/properties/{id}
-*/
-
 namespace BookingApp.WebApi.Controllers.PropertiesApi
 {
     [ApiController]
@@ -19,8 +11,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
     {
         private readonly IPropertyService _propertyService = propertyService;
 
-        // GET /api/properties
         [HttpGet]
+        [ProducesResponseType(typeof(IReadOnlyCollection<PropertyDto>), StatusCodes.Status200OK)]
         public ActionResult<IReadOnlyCollection<PropertyDto>> GetAll()
         {
             var properties = _propertyService.GetAll();
@@ -28,16 +20,18 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
             return Ok(response);
         }
 
-        // GET /api/properties/{id}
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(PropertyDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<PropertyDto> GetById(Guid id)
         {
             var property = _propertyService.GetById(id);
             return Ok(property.ToDto());
         }
 
-        // POST /api/properties
         [HttpPost]
+        [ProducesResponseType(typeof(PropertyDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<PropertyDto> Create([FromBody] CreatePropertyDto dto)
         {
             var propertyEntity = dto.ToEntity();
@@ -46,8 +40,10 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created.ToDto());
         }
 
-        // PUT /api/properties/{id}
         [HttpPut("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Update(Guid id, [FromBody] UpdatePropertyDto dto)
         {
             var propertyEntity = dto.ToEntity(id); // Маппинг Update DTO -> Entity
@@ -55,8 +51,10 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
             return NoContent();
         }
 
-        // DELETE /api/properties/{id}
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
             _propertyService.Delete(id);

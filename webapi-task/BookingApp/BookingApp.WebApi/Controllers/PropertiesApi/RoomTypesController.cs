@@ -3,14 +3,6 @@ using BookingApp.WebApi.DTOs.RoomTypes;
 using BookingApp.WebApi.Mappings;
 using Microsoft.AspNetCore.Mvc;
 
-/*
-GET    /api/properties/{propertyId}/roomtypes
-POST   /api/properties/{propertyId}/roomtypes
-GET    /api/roomtypes/{id}
-PUT    /api/roomtypes/{id}
-DELETE /api/roomtypes/{id}
-*/
-
 namespace BookingApp.WebApi.Controllers.PropertiesApi
 {
     [ApiController]
@@ -19,6 +11,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         private readonly IRoomTypeService _roomTypeService = roomTypeService;
 
         [HttpGet("api/properties/{propertyId:guid}/roomtypes")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<RoomTypeDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IReadOnlyCollection<RoomTypeDto>> GetByPropertyId(Guid propertyId)
         {
             var roomTypes = _roomTypeService.GetByPropertyId(propertyId);
@@ -27,6 +21,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         }
 
         [HttpPost("api/properties/{propertyId:guid}/roomtypes")]
+        [ProducesResponseType(typeof(RoomTypeDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<RoomTypeDto> Create(Guid propertyId, [FromBody] CreateRoomTypeDto dto)
         {
             var roomTypeEntity = dto.ToEntity(propertyId);
@@ -35,6 +32,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         }
 
         [HttpGet("api/roomtypes/{id:guid}")]
+        [ProducesResponseType(typeof(RoomTypeDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<RoomTypeDto> GetById(Guid id)
         {
             var roomType = _roomTypeService.GetById(id);
@@ -42,6 +41,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         }
 
         [HttpPut("api/roomtypes/{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Update(Guid id, [FromBody] UpdateRoomTypeDto dto)
         {
             var existing = _roomTypeService.GetById(id);
@@ -51,6 +53,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         }
 
         [HttpDelete("api/roomtypes/{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
             _roomTypeService.Delete(id);

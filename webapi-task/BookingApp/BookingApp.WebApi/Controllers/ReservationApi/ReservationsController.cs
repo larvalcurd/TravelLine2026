@@ -3,12 +3,6 @@ using BookingApp.WebApi.DTOs.Reservations;
 using BookingApp.WebApi.Mappings;
 using Microsoft.AspNetCore.Mvc;
 
-/*
-POST   /api/reservations
-GET    /api/reservations
-GET    /api/reservations/{id}
-DELETE /api/reservations/{id}
-*/
 namespace BookingApp.WebApi.Controllers.ReservationApi
 {
     [ApiController]
@@ -18,6 +12,10 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         private readonly IReservationService _reservationService = reservationService;
 
         [HttpPost]
+        [ProducesResponseType(typeof(ReservationDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult<ReservationDto> Create([FromBody] CreateReservationDto dto)
         {
             var request = dto.ToRequest();
@@ -31,6 +29,8 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IReadOnlyCollection<ReservationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<IReadOnlyCollection<ReservationDto>> GetReservations([FromQuery] ReservationFilterDto filterDto)
         {
             var reservationFilter = filterDto.ToFilter();
@@ -42,6 +42,8 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         }
 
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(ReservationDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<ReservationDto> GetById(Guid id)
         {
             var reservation = _reservationService.GetById(id);
@@ -49,6 +51,8 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         }
 
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Cancel(Guid id)
         {
             _reservationService.Cancel(id);
