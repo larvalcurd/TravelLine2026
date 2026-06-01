@@ -8,39 +8,40 @@ namespace BookingApp.Infrastructure.Persistence.Configurations
 {
     public class RoomTypeConfiguration : IEntityTypeConfiguration<RoomType>
     {
-        public void Configure(EntityTypeBuilder<RoomType> builder)
+        public void Configure( EntityTypeBuilder<RoomType> builder )
         {
-            builder.ToTable("RoomTypes");
-            builder.HasKey(rt => rt.Id);
+            builder.ToTable( "RoomTypes" );
+            builder.HasKey( rt => rt.Id );
 
-            builder.Property(rt => rt.Name).IsRequired().HasMaxLength(200);
-            builder.Property(rt => rt.Currency).IsRequired().HasMaxLength(3);
-            builder.Property(rt => rt.DailyPrice).IsRequired().HasPrecision(18, 2); 
-            builder.Property(rt => rt.MinPersonCount).IsRequired();
-            builder.Property(rt => rt.MaxPersonCount).IsRequired();
-            builder.Property(rt => rt.TotalRoomsCount).IsRequired();
+            builder.Property( rt => rt.Name ).IsRequired().HasMaxLength( 200 );
+            builder.Property( rt => rt.Currency ).IsRequired().HasMaxLength( 3 );
+            builder.Property( rt => rt.DailyPrice ).IsRequired().HasPrecision( 18, 2 );
 
-            builder.Property(rt => rt.Services)
+            builder.Property( rt => rt.MinPersonCount ).IsRequired();
+            builder.Property( rt => rt.MaxPersonCount ).IsRequired();
+            builder.Property( rt => rt.TotalRoomsCount ).IsRequired();
+
+            builder.Property( rt => rt.Services )
                 .HasConversion(
-                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                    v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>())
-                .Metadata.SetValueComparer(CreateStringListComparer());
+                    v => JsonSerializer.Serialize( v, ( JsonSerializerOptions? )null ),
+                    v => JsonSerializer.Deserialize<List<string>>( v, ( JsonSerializerOptions? )null ) ?? new List<string>() )
+                .Metadata.SetValueComparer( CreateStringListComparer() );
 
-            builder.Property(rt => rt.Amenities)
+            builder.Property( rt => rt.Amenities )
                 .HasConversion(
-                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                    v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>())
-                .Metadata.SetValueComparer(CreateStringListComparer());
+                    v => JsonSerializer.Serialize( v, ( JsonSerializerOptions? )null ),
+                    v => JsonSerializer.Deserialize<List<string>>( v, ( JsonSerializerOptions? )null ) ?? new List<string>() )
+                .Metadata.SetValueComparer( CreateStringListComparer() );
 
-            builder.HasIndex(rt => rt.PropertyId);
-            builder.HasIndex(rt => new { rt.PropertyId, rt.DailyPrice });
+            builder.HasIndex( rt => rt.PropertyId );
+            builder.HasIndex( rt => new { rt.PropertyId, rt.DailyPrice } );
         }
 
         private static ValueComparer<List<string>> CreateStringListComparer()
         {
             return new ValueComparer<List<string>>(
-                (a, b) => a != null && b != null && a.SequenceEqual(b),
-                c => c.Aggregate(0, (hash, item) => HashCode.Combine(hash, item != null ? item.GetHashCode() : 0)),
+                ( a, b ) => a != null && b != null && a.SequenceEqual( b ),
+                c => c.Aggregate( 0, ( hash, item ) => HashCode.Combine( hash, item != null ? item.GetHashCode() : 0 ) ),
                 c => c.ToList()
             );
         }

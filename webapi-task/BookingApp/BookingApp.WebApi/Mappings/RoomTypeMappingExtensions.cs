@@ -5,9 +5,9 @@ namespace BookingApp.WebApi.Mappings
 {
     public static class RoomTypeMappingExtensions
     {
-        public static RoomTypeDto ToDto(this RoomType rt)
+        public static RoomTypeDto ToDto( this RoomType rt )
         {
-            if (rt == null) return null!;
+            if ( rt == null ) return null!;
 
             return new RoomTypeDto
             {
@@ -24,9 +24,9 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static RoomType ToEntity(this CreateRoomTypeDto dto, Guid propertyId)
+        public static RoomType ToEntity( this CreateRoomTypeDto dto, Guid propertyId )
         {
-            if (dto == null) return null!;
+            if ( dto == null ) return null!;
 
             return new RoomType
             {
@@ -43,9 +43,9 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static RoomType ToEntity(this UpdateRoomTypeDto dto, Guid id, Guid propertyId)
+        public static RoomType ToEntity( this UpdateRoomTypeDto dto, Guid id, Guid propertyId )
         {
-            if (dto == null) return null!;
+            if ( dto == null ) return null!;
 
             return new RoomType
             {

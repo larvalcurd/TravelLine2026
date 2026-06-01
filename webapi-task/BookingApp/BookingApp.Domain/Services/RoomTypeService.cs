@@ -8,27 +8,27 @@ namespace BookingApp.Domain.Services
     public class RoomTypeService(
         IPropertyRepository propertyRepository,
         IRoomTypeRepository roomTypeRepository,
-        IReservationRepository reservationRepository) : IRoomTypeService
+        IReservationRepository reservationRepository ) : IRoomTypeService
     {
         private readonly IPropertyRepository _propertyRepository = propertyRepository;
         private readonly IRoomTypeRepository _roomTypeRepository = roomTypeRepository;
         private readonly IReservationRepository _reservationRepository = reservationRepository;
 
-        public IReadOnlyCollection<RoomType> GetByPropertyId(Guid propertyId)
+        public IReadOnlyCollection<RoomType> GetByPropertyId( Guid propertyId )
         {
-            EnsurePropertyExists(propertyId);
-            return _roomTypeRepository.GetByPropertyId(propertyId);
+            EnsurePropertyExists( propertyId );
+            return _roomTypeRepository.GetByPropertyId( propertyId );
         }
 
-        public RoomType GetById(Guid id)
+        public RoomType GetById( Guid id )
         {
-            return _roomTypeRepository.GetById(id) ?? throw new NotFoundException($"Room type with id '{id}' was not found.");
+            return _roomTypeRepository.GetById( id ) ?? throw new NotFoundException( $"Room type with id '{id}' was not found." );
         }
 
-        public RoomType Create(Guid propertyId, RoomType roomType)
+        public RoomType Create( Guid propertyId, RoomType roomType )
         {
-            Validate(roomType);
-            EnsurePropertyExists(propertyId);
+            Validate( roomType );
+            EnsurePropertyExists( propertyId );
 
             var entity = new RoomType
             {
@@ -40,19 +40,19 @@ namespace BookingApp.Domain.Services
                 MinPersonCount = roomType.MinPersonCount,
                 MaxPersonCount = roomType.MaxPersonCount,
                 TotalRoomsCount = roomType.TotalRoomsCount,
-                Services = roomType.Services?.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList() ?? [],
-                Amenities = roomType.Amenities?.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList() ?? []
+                Services = roomType.Services?.Select( x => x.Trim() ).Where( x => !string.IsNullOrWhiteSpace( x ) ).ToList() ?? [],
+                Amenities = roomType.Amenities?.Select( x => x.Trim() ).Where( x => !string.IsNullOrWhiteSpace( x ) ).ToList() ?? []
             };
 
-            _roomTypeRepository.Add(entity);
+            _roomTypeRepository.Add( entity );
             return entity;
         }
 
-        public RoomType Update(Guid id, RoomType roomType)
+        public RoomType Update( Guid id, RoomType roomType )
         {
-            var existing = _roomTypeRepository.GetById(id) ?? throw new NotFoundException($"Room type with id '{id}' was not found.");
+            var existing = _roomTypeRepository.GetById( id ) ?? throw new NotFoundException( $"Room type with id '{id}' was not found." );
 
-            Validate(roomType);
+            Validate( roomType );
 
             var updated = new RoomType
             {
@@ -64,69 +64,71 @@ namespace BookingApp.Domain.Services
                 MinPersonCount = roomType.MinPersonCount,
                 MaxPersonCount = roomType.MaxPersonCount,
                 TotalRoomsCount = roomType.TotalRoomsCount,
-                Services = roomType.Services?.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList() ?? [],
-                Amenities = roomType.Amenities?.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList() ?? []
+                Services = roomType.Services?.Select( x => x.Trim() ).Where( x => !string.IsNullOrWhiteSpace( x ) ).ToList() ?? [],
+                Amenities = roomType.Amenities?.Select( x => x.Trim() ).Where( x => !string.IsNullOrWhiteSpace( x ) ).ToList() ?? []
             };
 
-            _roomTypeRepository.Update(updated);
+            _roomTypeRepository.Update( updated );
             return updated;
         }
 
-        public void Delete(Guid id)
+        public void Delete( Guid id )
         {
-            var existing = _roomTypeRepository.GetById(id) ?? throw new NotFoundException($"Room type with id '{id}' was not found.");
+            var existing = _roomTypeRepository.GetById( id ) ?? throw new NotFoundException( $"Room type with id '{id}' was not found." );
 
-            if (_reservationRepository.HasReservationsForRoomType(id))
+            if ( _reservationRepository.HasReservationsForRoomType( id ) )
             {
-                throw new ValidationException("Cannot delete room type with existing reservations.");
+                throw new ValidationException( "Cannot delete room type with existing reservations." );
             }
-            
-            _roomTypeRepository.Delete(id); 
+
+
+            _roomTypeRepository.Delete( id );
+
         }
 
-        private void EnsurePropertyExists(Guid propertyId)
+        private void EnsurePropertyExists( Guid propertyId )
         {
-            if (_propertyRepository.GetById(propertyId) == null)
+            if ( _propertyRepository.GetById( propertyId ) == null )
             {
-                throw new NotFoundException($"Property with id '{propertyId}' was not found.");
+                throw new NotFoundException( $"Property with id '{propertyId}' was not found." );
             }
         }
 
-        private static void Validate(RoomType roomType)
+        private static void Validate( RoomType roomType )
         {
-            if (roomType == null)
+            if ( roomType == null )
             {
-                throw new ValidationException("Room type is required.");
+                throw new ValidationException( "Room type is required." );
             }
 
-            if (string.IsNullOrWhiteSpace(roomType.Name))
+            if ( string.IsNullOrWhiteSpace( roomType.Name ) )
             {
-                throw new ValidationException("Room type name is required.");
+                throw new ValidationException( "Room type name is required." );
             }
 
-            if (roomType.DailyPrice <= 0)
+            if ( roomType.DailyPrice <= 0 )
             {
-                throw new ValidationException("Daily price must be greater than zero.");
+                throw new ValidationException( "Daily price must be greater than zero." );
             }
 
-            if (string.IsNullOrWhiteSpace(roomType.Currency))
+            if ( string.IsNullOrWhiteSpace( roomType.Currency ) )
             {
-                throw new ValidationException("Currency is required.");
+                throw new ValidationException( "Currency is required." );
             }
 
-            if (roomType.MinPersonCount <= 0)
+            if ( roomType.MinPersonCount <= 0 )
             {
-                throw new ValidationException("MinPersonCount must be greater than zero.");
+                throw new ValidationException( "MinPersonCount must be greater than zero." );
             }
 
-            if (roomType.MaxPersonCount < roomType.MinPersonCount)
+            if ( roomType.MaxPersonCount < roomType.MinPersonCount )
             {
-                throw new ValidationException("MaxPersonCount must be greater than or equal to MinPersonCount.");
+                throw new ValidationException( "MaxPersonCount must be greater than or equal to MinPersonCount." );
             }
 
-            if (roomType.TotalRoomsCount <= 0)
+            if ( roomType.TotalRoomsCount <= 0 )
             {
-                throw new ValidationException("TotalRoomsCount must be greater than zero.");
+                throw new ValidationException( "TotalRoomsCount must be greater than zero." );
             }
         }
     }

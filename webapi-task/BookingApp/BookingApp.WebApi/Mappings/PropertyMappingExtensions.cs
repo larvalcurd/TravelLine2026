@@ -5,9 +5,9 @@ namespace BookingApp.WebApi.Mappings
 {
     public static class PropertyMappingExtensions
     {
-        public static PropertyDto ToDto(this Property property)
+        public static PropertyDto ToDto( this Property property )
         {
-            if (property == null) return null!;
+            if ( property == null ) return null!;
 
             return new PropertyDto
             {
@@ -21,9 +21,9 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static Property ToEntity(this CreatePropertyDto dto)
+        public static Property ToEntity( this CreatePropertyDto dto )
         {
-            if (dto == null) return null!;
+            if ( dto == null ) return null!;
 
             return new Property
             {
@@ -37,9 +37,9 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static Property ToEntity(this UpdatePropertyDto dto, Guid id)
+        public static Property ToEntity( this UpdatePropertyDto dto, Guid id )
         {
-            if (dto == null) return null!;
+            if ( dto == null ) return null!;
 
             return new Property
             {

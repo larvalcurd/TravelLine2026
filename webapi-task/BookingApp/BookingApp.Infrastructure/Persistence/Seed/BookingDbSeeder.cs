@@ -6,9 +6,9 @@ namespace BookingApp.Infrastructure.Persistence.Seed
 {
     public static class BookingDbSeeder
     {
-        public static void Seed(BookingDbContext dbContext)
+        public static void Seed( BookingDbContext dbContext )
         {
-            if (dbContext.Properties.Any())
+            if ( dbContext.Properties.Any() )
             {
                 return;
             }
@@ -52,8 +52,8 @@ namespace BookingApp.Infrastructure.Persistence.Seed
                 MinPersonCount = 1,
                 MaxPersonCount = 2,
                 TotalRoomsCount = 10,
-                Services = ["Breakfast", "WiFi"],
-                Amenities = ["TV", "Air conditioning"]
+                Services = [ "Breakfast", "WiFi" ],
+                Amenities = [ "TV", "Air conditioning" ]
             };
 
             var roomType2 = new RoomType
@@ -66,8 +66,8 @@ namespace BookingApp.Infrastructure.Persistence.Seed
                 MinPersonCount = 1,
                 MaxPersonCount = 4,
                 TotalRoomsCount = 3,
-                Services = ["Breakfast", "Parking", "WiFi"],
-                Amenities = ["TV", "Air conditioning", "Mini bar"]
+                Services = [ "Breakfast", "Parking", "WiFi" ],
+                Amenities = [ "TV", "Air conditioning", "Mini bar" ]
             };
 
             var roomType3 = new RoomType
@@ -80,8 +80,8 @@ namespace BookingApp.Infrastructure.Persistence.Seed
                 MinPersonCount = 1,
                 MaxPersonCount = 3,
                 TotalRoomsCount = 5,
-                Services = ["WiFi"],
-                Amenities = ["Kitchen", "Washing machine"]
+                Services = [ "WiFi" ],
+                Amenities = [ "Kitchen", "Washing machine" ]
             };
 
             var reservation1 = new Reservation
@@ -89,10 +89,10 @@ namespace BookingApp.Infrastructure.Persistence.Seed
                 Id = Guid.NewGuid(),
                 PropertyId = property1Id,
                 RoomTypeId = roomType1Id,
-                ArrivalDate = new DateOnly(2025, 6, 10),
-                DepartureDate = new DateOnly(2025, 6, 15),
-                ArrivalTime = new TimeOnly(14, 0),
-                DepartureTime = new TimeOnly(12, 0),
+                ArrivalDate = new DateOnly( 2025, 6, 10 ),
+                DepartureDate = new DateOnly( 2025, 6, 15 ),
+                ArrivalTime = new TimeOnly( 14, 0 ),
+                DepartureTime = new TimeOnly( 12, 0 ),
                 GuestName = "Ivan Ivanov",
                 GuestPhoneNumber = "+79990000001",
                 GuestCount = 2,
@@ -101,9 +101,9 @@ namespace BookingApp.Infrastructure.Persistence.Seed
                 IsCanceled = false
             };
 
-            dbContext.Properties.AddRange(property1, property2);
-            dbContext.RoomTypes.AddRange(roomType1, roomType2, roomType3);
-            dbContext.Reservations.Add(reservation1);
+            dbContext.Properties.AddRange( property1, property2 );
+            dbContext.RoomTypes.AddRange( roomType1, roomType2, roomType3 );
+            dbContext.Reservations.Add( reservation1 );
 
             dbContext.SaveChanges();
         }

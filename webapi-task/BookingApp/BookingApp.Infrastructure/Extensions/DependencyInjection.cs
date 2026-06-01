@@ -9,10 +9,10 @@ namespace BookingApp.Infrastructure.Extensions
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure( this IServiceCollection services, IConfiguration configuration )
         {
-            services.AddDbContext<BookingDbContext>(options =>
-                options.UseSqlite(configuration.GetConnectionString("BookingDatabase")));
+            services.AddDbContext<BookingDbContext>( options =>
+                options.UseSqlite( configuration.GetConnectionString( "BookingDatabase" ) ) );
 
             services.AddScoped<IPropertyRepository, EfPropertyRepository>();
             services.AddScoped<IRoomTypeRepository, EfRoomTypeRepository>();

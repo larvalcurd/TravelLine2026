@@ -5,9 +5,9 @@ namespace BookingApp.WebApi.Mappings
 {
     public static class SearchMappingExtensions
     {
-        public static SearchAvailabilityCriteria ToCriteria(this SearchAvailabilityQueryDto dto)
+        public static SearchAvailabilityCriteria ToCriteria( this SearchAvailabilityQueryDto dto )
         {
-            if (dto == null) return null!;
+            if ( dto == null ) return null!;
 
             return new SearchAvailabilityCriteria
             {
@@ -19,9 +19,9 @@ namespace BookingApp.WebApi.Mappings
             };
 
         }
-        public static SearchAvailabilityResultDto ToDto(this AvailableRoomOption option)
+        public static SearchAvailabilityResultDto ToDto( this AvailableRoomOption option )
         {
-            if (option == null) return null!;
+            if ( option == null ) return null!;
 
             return new SearchAvailabilityResultDto
             {

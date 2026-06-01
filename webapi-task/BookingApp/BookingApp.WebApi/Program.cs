@@ -10,24 +10,24 @@ using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder( args );
 
 builder.Services.AddControllers();
 
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+builder.Services.AddValidatorsFromAssembly( typeof( Program ).Assembly );
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddSwaggerGen( options =>
 {
     var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlFilePath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
-    options.IncludeXmlComments(xmlFilePath);
-});
+    var xmlFilePath = Path.Combine( AppContext.BaseDirectory, xmlFileName );
+    options.IncludeXmlComments( xmlFilePath );
+} );
 
 builder.Services.AddFluentValidationRulesToSwagger();
 
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure( builder.Configuration );
 
 builder.Services.AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
@@ -36,12 +36,12 @@ builder.Services.AddScoped<IReservationService, ReservationService>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+using ( var scope = app.Services.CreateScope() )
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<BookingDbContext>();
     dbContext.Database.Migrate();
 
-    BookingDbSeeder.Seed(dbContext);
+    BookingDbSeeder.Seed( dbContext );
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();

@@ -9,9 +9,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
     /// Управляет объектами размещения: создание, просмотр, обновление и удаление.
     /// </summary>
     [ApiController]
-    [Route("api/properties")]
-    [Produces("application/json")]
-    public class PropertiesController(IPropertyService propertyService) : ControllerBase
+    [Route( "api/properties" )]
+    [Produces( "application/json" )]
+    public class PropertiesController( IPropertyService propertyService ) : ControllerBase
     {
         private readonly IPropertyService _propertyService = propertyService;
 
@@ -21,12 +21,12 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <returns>Список объектов размещения.</returns>
         /// <response code="200">Список объектов размещения успешно получен.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IReadOnlyCollection<PropertyDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType( typeof( IReadOnlyCollection<PropertyDto> ), StatusCodes.Status200OK )]
         public ActionResult<IReadOnlyCollection<PropertyDto>> GetAll()
         {
             var properties = _propertyService.GetAll();
-            var response = properties.Select(p => p.ToDto()).ToList();
-            return Ok(response);
+            var response = properties.Select( p => p.ToDto() ).ToList();
+            return Ok( response );
         }
 
         /// <summary>
@@ -36,13 +36,13 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <returns>Данные объекта размещения.</returns>
         /// <response code="200">Объект размещения найден.</response>
         /// <response code="404">Объект размещения с указанным идентификатором не найден.</response>
-        [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(PropertyDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<PropertyDto> GetById(Guid id)
+        [HttpGet( "{id:guid}" )]
+        [ProducesResponseType( typeof( PropertyDto ), StatusCodes.Status200OK )]
+        [ProducesResponseType( StatusCodes.Status404NotFound )]
+        public ActionResult<PropertyDto> GetById( Guid id )
         {
-            var property = _propertyService.GetById(id);
-            return Ok(property.ToDto());
+            var property = _propertyService.GetById( id );
+            return Ok( property.ToDto() );
         }
 
         /// <summary>
@@ -53,15 +53,15 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <response code="201">Объект размещения успешно создан.</response>
         /// <response code="400">Переданы некорректные данные объекта размещения.</response>
         [HttpPost]
-        [Consumes("application/json")]
-        [ProducesResponseType(typeof(PropertyDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<PropertyDto> Create([FromBody] CreatePropertyDto dto)
+        [Consumes( "application/json" )]
+        [ProducesResponseType( typeof( PropertyDto ), StatusCodes.Status201Created )]
+        [ProducesResponseType( StatusCodes.Status400BadRequest )]
+        public ActionResult<PropertyDto> Create( [FromBody] CreatePropertyDto dto )
         {
             var propertyEntity = dto.ToEntity();
-            var created = _propertyService.Create(propertyEntity);
+            var created = _propertyService.Create( propertyEntity );
 
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created.ToDto());
+            return CreatedAtAction( nameof( GetById ), new { id = created.Id }, created.ToDto() );
         }
 
         /// <summary>
@@ -72,15 +72,15 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <response code="204">Объект размещения успешно обновлен.</response>
         /// <response code="400">Переданы некорректные данные объекта размещения.</response>
         /// <response code="404">Объект размещения с указанным идентификатором не найден.</response>
-        [HttpPut("{id:guid}")]
-        [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Update(Guid id, [FromBody] UpdatePropertyDto dto)
+        [HttpPut( "{id:guid}" )]
+        [Consumes( "application/json" )]
+        [ProducesResponseType( StatusCodes.Status204NoContent )]
+        [ProducesResponseType( StatusCodes.Status400BadRequest )]
+        [ProducesResponseType( StatusCodes.Status404NotFound )]
+        public IActionResult Update( Guid id, [FromBody] UpdatePropertyDto dto )
         {
-            var propertyEntity = dto.ToEntity(id);
-            _propertyService.Update(id, propertyEntity);
+            var propertyEntity = dto.ToEntity( id );
+            _propertyService.Update( id, propertyEntity );
             return NoContent();
         }
 
@@ -91,13 +91,13 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <response code="204">Объект размещения успешно удален.</response>
         /// <response code="400">Объект размещения нельзя удалить из-за связанных данных.</response>
         /// <response code="404">Объект размещения с указанным идентификатором не найден.</response>
-        [HttpDelete("{id:guid}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Delete(Guid id)
+        [HttpDelete( "{id:guid}" )]
+        [ProducesResponseType( StatusCodes.Status204NoContent )]
+        [ProducesResponseType( StatusCodes.Status400BadRequest )]
+        [ProducesResponseType( StatusCodes.Status404NotFound )]
+        public IActionResult Delete( Guid id )
         {
-            _propertyService.Delete(id);
+            _propertyService.Delete( id );
             return NoContent();
         }
     }

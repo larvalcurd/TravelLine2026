@@ -9,9 +9,9 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
     /// Выполняет поиск доступных вариантов размещения по городу, датам, количеству гостей и цене.
     /// </summary>
     [ApiController]
-    [Route("api/search")]
-    [Produces("application/json")]
-    public class SearchController(ISearchService searchService) : ControllerBase
+    [Route( "api/search" )]
+    [Produces( "application/json" )]
+    public class SearchController( ISearchService searchService ) : ControllerBase
     {
         /// <summary>
         /// Возвращает доступные пары объект размещения / категория номера по заданным параметрам поиска.
@@ -21,14 +21,14 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         /// <response code="200">Поиск выполнен успешно. Если вариантов нет, возвращается пустой список.</response>
         /// <response code="400">Переданы некорректные параметры поиска.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IReadOnlyCollection<SearchAvailabilityResultDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IReadOnlyCollection<SearchAvailabilityResultDto>> Search([FromQuery] SearchAvailabilityQueryDto query)
+        [ProducesResponseType( typeof( IReadOnlyCollection<SearchAvailabilityResultDto> ), StatusCodes.Status200OK )]
+        [ProducesResponseType( StatusCodes.Status400BadRequest )]
+        public ActionResult<IReadOnlyCollection<SearchAvailabilityResultDto>> Search( [FromQuery] SearchAvailabilityQueryDto query )
         {
             var criteria = query.ToCriteria();
-            var result = searchService.Search(criteria).Select(x => x.ToDto()).ToList();
+            var result = searchService.Search( criteria ).Select( x => x.ToDto() ).ToList();
 
-            return Ok(result);
+            return Ok( result );
         }
     }
 }

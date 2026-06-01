@@ -4,23 +4,23 @@ using BookingApp.Domain.Exceptions;
 
 namespace BookingApp.WebApi.Middleware
 {
-    public class ExceptionHandlingMiddleware(RequestDelegate next)
+    public class ExceptionHandlingMiddleware( RequestDelegate next )
     {
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync( HttpContext context )
         {
             try
             {
-                await next(context);
+                await next( context );
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
-                await HandleExceptionAsync(context, ex);
+                await HandleExceptionAsync( context, ex );
             }
         }
 
         private static async Task HandleExceptionAsync(
             HttpContext context,
-            Exception exception)
+            Exception exception )
         {
             context.Response.ContentType = "application/json";
 
@@ -40,7 +40,7 @@ namespace BookingApp.WebApi.Middleware
             };
 
             await context.Response.WriteAsync(
-                JsonSerializer.Serialize(response));
+                JsonSerializer.Serialize( response ) );
         }
     }
 }

@@ -9,40 +9,40 @@ namespace BookingApp.Domain.Services;
 public class ReservationService(
     IPropertyRepository propertyRepository,
     IRoomTypeRepository roomTypeRepository,
-    IReservationRepository reservationRepository) : IReservationService
+    IReservationRepository reservationRepository ) : IReservationService
 {
     private readonly IPropertyRepository _propertyRepository = propertyRepository;
     private readonly IRoomTypeRepository _roomTypeRepository = roomTypeRepository;
     private readonly IReservationRepository _reservationRepository = reservationRepository;
 
-    public Reservation Create(CreateReservationRequest request)
+    public Reservation Create( CreateReservationRequest request )
     {
-        ValidateRequest(request);
+        ValidateRequest( request );
 
-        var property = _propertyRepository.GetById(request.PropertyId)
-            ?? throw new NotFoundException($"Property with id '{request.PropertyId}' was not found.");
+        var property = _propertyRepository.GetById( request.PropertyId )
+            ?? throw new NotFoundException( $"Property with id '{request.PropertyId}' was not found." );
 
-        var roomType = _roomTypeRepository.GetById(request.RoomTypeId)
-            ?? throw new NotFoundException($"Room type with id '{request.RoomTypeId}' was not found.");
+        var roomType = _roomTypeRepository.GetById( request.RoomTypeId )
+            ?? throw new NotFoundException( $"Room type with id '{request.RoomTypeId}' was not found." );
 
-        if (roomType.PropertyId != request.PropertyId)
+        if ( roomType.PropertyId != request.PropertyId )
         {
-            throw new ValidationException("The room type does not belong to the specified property.");
+            throw new ValidationException( "The room type does not belong to the specified property." );
         }
 
-        if (request.GuestCount < roomType.MinPersonCount || request.GuestCount > roomType.MaxPersonCount)
+        if ( request.GuestCount < roomType.MinPersonCount || request.GuestCount > roomType.MaxPersonCount )
         {
-            throw new ValidationException("Guest count does not fit the selected room type.");
+            throw new ValidationException( "Guest count does not fit the selected room type." );
         }
 
         var overlappingReservations = _reservationRepository.GetOverlappingCount(
             request.RoomTypeId,
             request.ArrivalDate,
-            request.DepartureDate);
+            request.DepartureDate );
 
-        if (overlappingReservations >= roomType.TotalRoomsCount)
+        if ( overlappingReservations >= roomType.TotalRoomsCount )
         {
-            throw new NoAvailabilityException("No available rooms for the selected period.");
+            throw new NoAvailabilityException( "No available rooms for the selected period." );
         }
 
         var nights = request.DepartureDate.DayNumber - request.ArrivalDate.DayNumber;
@@ -64,60 +64,60 @@ public class ReservationService(
             IsCanceled = false
         };
 
-        _reservationRepository.Add(reservation);
+        _reservationRepository.Add( reservation );
         return reservation;
     }
 
-    public IReadOnlyCollection<Reservation> GetAll(ReservationFilter? filter)
+    public IReadOnlyCollection<Reservation> GetAll( ReservationFilter? filter )
     {
-        return _reservationRepository.GetByFilter(filter ?? new ReservationFilter());
+        return _reservationRepository.GetByFilter( filter ?? new ReservationFilter() );
     }
 
-    public Reservation GetById(Guid id)
+    public Reservation GetById( Guid id )
     {
-        return _reservationRepository.GetById(id)
-            ?? throw new NotFoundException($"Reservation with id '{id}' was not found.");
+        return _reservationRepository.GetById( id )
+            ?? throw new NotFoundException( $"Reservation with id '{id}' was not found." );
     }
 
-    public void Cancel(Guid id)
+    public void Cancel( Guid id )
     {
-        var reservation = _reservationRepository.GetById(id)
-            ?? throw new NotFoundException($"Reservation with id '{id}' was not found.");
+        var reservation = _reservationRepository.GetById( id )
+            ?? throw new NotFoundException( $"Reservation with id '{id}' was not found." );
 
-        if (reservation.IsCanceled)
+        if ( reservation.IsCanceled )
         {
             return;
         }
 
         reservation.IsCanceled = true;
-        _reservationRepository.Update(reservation);
+        _reservationRepository.Update( reservation );
     }
 
-    private static void ValidateRequest(CreateReservationRequest request)
+    private static void ValidateRequest( CreateReservationRequest request )
     {
-        if (request == null)
+        if ( request == null )
         {
-            throw new ValidationException("Reservation request is required.");
+            throw new ValidationException( "Reservation request is required." );
         }
 
-        if (request.ArrivalDate >= request.DepartureDate)
+        if ( request.ArrivalDate >= request.DepartureDate )
         {
-            throw new ValidationException("ArrivalDate must be earlier than DepartureDate.");
+            throw new ValidationException( "ArrivalDate must be earlier than DepartureDate." );
         }
 
-        if (request.GuestCount <= 0)
+        if ( request.GuestCount <= 0 )
         {
-            throw new ValidationException("GuestCount must be greater than zero.");
+            throw new ValidationException( "GuestCount must be greater than zero." );
         }
 
-        if (string.IsNullOrWhiteSpace(request.GuestName))
+        if ( string.IsNullOrWhiteSpace( request.GuestName ) )
         {
-            throw new ValidationException("GuestName is required.");
+            throw new ValidationException( "GuestName is required." );
         }
 
-        if (string.IsNullOrWhiteSpace(request.GuestPhoneNumber))
+        if ( string.IsNullOrWhiteSpace( request.GuestPhoneNumber ) )
         {
-            throw new ValidationException("GuestPhoneNumber is required.");
+            throw new ValidationException( "GuestPhoneNumber is required." );
         }
     }
 }
