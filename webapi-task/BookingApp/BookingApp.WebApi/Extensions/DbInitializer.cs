@@ -6,9 +6,9 @@ namespace BookingApp.WebApi.Extensions
 {
     public static class DbInitializer
     {
-        public static void InitializeDatabase( this IApplicationBuilder app )
+        public static void InitializeDatabase( this WebApplication app )
         {
-            using var scope = app.ApplicationServices.CreateScope();
+            using var scope = app.Services.CreateScope();
 
             var dbContext = scope.ServiceProvider.GetRequiredService<BookingDbContext>();
 

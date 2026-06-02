@@ -1,4 +1,5 @@
 using BookingApp.Domain.Entities;
+using BookingApp.Domain.Models;
 using BookingApp.WebApi.DTOs.Properties;
 
 namespace BookingApp.WebApi.Mappings
@@ -21,13 +22,10 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static Property ToEntity( this CreatePropertyDto dto )
+        public static CreatePropertyRequest ToCreateRequest( this CreatePropertyDto dto )
         {
-            if ( dto == null ) return null!;
-
-            return new Property
+            return new CreatePropertyRequest
             {
-                Id = Guid.NewGuid(),
                 Name = dto.Name,
                 Country = dto.Country,
                 City = dto.City,
@@ -37,13 +35,10 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static Property ToEntity( this UpdatePropertyDto dto, Guid id )
+        public static UpdatePropertyRequest ToUpdateRequest( this UpdatePropertyDto dto )
         {
-            if ( dto == null ) return null!;
-
-            return new Property
+            return new UpdatePropertyRequest
             {
-                Id = id,
                 Name = dto.Name,
                 Country = dto.Country,
                 City = dto.City,

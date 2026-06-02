@@ -1,10 +1,9 @@
 using BookingApp.Domain.Interfaces.Services;
 using BookingApp.Domain.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BookingApp.WebApi.Extensions
 {
-    public static class ApplicationServicesExtensions
+    public static class DomainServicesExtensions
     {
         public static IServiceCollection AddDomainServices( this IServiceCollection services )
         {

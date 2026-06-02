@@ -58,8 +58,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
         public ActionResult<PropertyDto> Create( [FromBody] CreatePropertyDto dto )
         {
-            var propertyEntity = dto.ToEntity();
-            var created = _propertyService.Create( propertyEntity );
+            var request = dto.ToCreateRequest();
+            var created = _propertyService.Create( request );
 
             return CreatedAtAction( nameof( GetById ), new { id = created.Id }, created.ToDto() );
         }
@@ -79,8 +79,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public IActionResult Update( Guid id, [FromBody] UpdatePropertyDto dto )
         {
-            var propertyEntity = dto.ToEntity( id );
-            _propertyService.Update( id, propertyEntity );
+            var request = dto.ToUpdateRequest();
+            _propertyService.Update( id, request );
             return NoContent();
         }
 

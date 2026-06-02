@@ -1,4 +1,5 @@
 using BookingApp.Domain.Entities;
+using BookingApp.Domain.Models;
 
 namespace BookingApp.Domain.Interfaces.Services
 {
@@ -6,8 +7,8 @@ namespace BookingApp.Domain.Interfaces.Services
     {
         IReadOnlyCollection<Property> GetAll();
         Property GetById( Guid id );
-        Property Create( Property property );
-        Property Update( Guid id, Property property );
+        Property Create( CreatePropertyRequest request );
+        Property Update( Guid id, UpdatePropertyRequest request );
         void Delete( Guid Id );
     }
 }

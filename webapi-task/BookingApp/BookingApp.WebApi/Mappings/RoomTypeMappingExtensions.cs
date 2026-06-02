@@ -1,4 +1,5 @@
 using BookingApp.Domain.Entities;
+using BookingApp.Domain.Models;
 using BookingApp.WebApi.DTOs.RoomTypes;
 
 namespace BookingApp.WebApi.Mappings
@@ -24,14 +25,12 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static RoomType ToEntity( this CreateRoomTypeDto dto, Guid propertyId )
+        public static CreateRoomTypeRequest ToCreateRequest( this CreateRoomTypeDto dto )
         {
             if ( dto == null ) return null!;
 
-            return new RoomType
+            return new CreateRoomTypeRequest
             {
-                Id = Guid.NewGuid(),
-                PropertyId = propertyId,
                 Name = dto.Name,
                 DailyPrice = dto.DailyPrice,
                 Currency = dto.Currency,
@@ -43,14 +42,12 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static RoomType ToEntity( this UpdateRoomTypeDto dto, Guid id, Guid propertyId )
+        public static UpdateRoomTypeRequest ToUpdateRequest( this UpdateRoomTypeDto dto )
         {
             if ( dto == null ) return null!;
 
-            return new RoomType
+            return new UpdateRoomTypeRequest
             {
-                Id = id,
-                PropertyId = propertyId,
                 Name = dto.Name,
                 DailyPrice = dto.DailyPrice,
                 Currency = dto.Currency,

@@ -2,6 +2,7 @@ using BookingApp.Domain.Entities;
 using BookingApp.Domain.Exceptions;
 using BookingApp.Domain.Interfaces.Repositories;
 using BookingApp.Domain.Interfaces.Services;
+using BookingApp.Domain.Models;
 
 namespace BookingApp.Domain.Services
 {
@@ -21,38 +22,38 @@ namespace BookingApp.Domain.Services
                 ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
         }
 
-        public Property Create( Property property )
+        public Property Create( CreatePropertyRequest request )
         {
-            Validate( property );
+            Validate( request );
 
             var entity = new Property
             {
                 Id = Guid.NewGuid(),
-                Name = property.Name.Trim(),
-                Country = property.Country.Trim(),
-                City = property.City.Trim(),
-                Address = property.Address.Trim(),
-                Latitude = property.Latitude,
-                Longitude = property.Longitude
+                Name = request.Name.Trim(),
+                Country = request.Country.Trim(),
+                City = request.City.Trim(),
+                Address = request.Address.Trim(),
+                Latitude = request.Latitude,
+                Longitude = request.Longitude
             };
 
             _propertyRepository.Add( entity );
             return entity;
         }
 
-        public Property Update( Guid id, Property property )
+        public Property Update( Guid id, UpdatePropertyRequest request )
         {
             Property existing = _propertyRepository.GetById( id )
                 ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
 
-            Validate( property );
+            Validate( request );
 
-            existing.Name = property.Name.Trim();
-            existing.Country = property.Country.Trim();
-            existing.City = property.City.Trim();
-            existing.Address = property.Address.Trim();
-            existing.Latitude = property.Latitude;
-            existing.Longitude = property.Longitude;
+            existing.Name = request.Name.Trim();
+            existing.Country = request.Country.Trim();
+            existing.City = request.City.Trim();
+            existing.Address = request.Address.Trim();
+            existing.Latitude = request.Latitude;
+            existing.Longitude = request.Longitude;
 
             _propertyRepository.Update( existing );
 
@@ -72,42 +73,47 @@ namespace BookingApp.Domain.Services
             _propertyRepository.Delete( id );
         }
 
-        private static void Validate( Property property )
+        private static void Validate( CreatePropertyRequest request )
         {
-            if ( property == null )
-            {
-                throw new ValidationException( "Property is required." );
-            }
-
-            if ( string.IsNullOrWhiteSpace( property.Name ) )
-            {
+            if ( string.IsNullOrWhiteSpace( request.Name ) )
                 throw new ValidationException( "Property name is required." );
-            }
 
-            if ( string.IsNullOrWhiteSpace( property.Country ) )
-            {
+            if ( string.IsNullOrWhiteSpace( request.Country ) )
                 throw new ValidationException( "Country is required." );
-            }
 
-            if ( string.IsNullOrWhiteSpace( property.City ) )
-            {
+            if ( string.IsNullOrWhiteSpace( request.City ) )
                 throw new ValidationException( "City is required." );
-            }
 
-            if ( string.IsNullOrWhiteSpace( property.Address ) )
-            {
+            if ( string.IsNullOrWhiteSpace( request.Address ) )
                 throw new ValidationException( "Address is required." );
-            }
 
-            if ( property.Latitude < -90 || property.Latitude > 90 )
-            {
+            if ( request.Latitude < -90 || request.Latitude > 90 )
                 throw new ValidationException( "Latitude must be between -90 and 90." );
-            }
 
-            if ( property.Longitude < -180 || property.Longitude > 180 )
-            {
+            if ( request.Longitude < -180 || request.Longitude > 180 )
                 throw new ValidationException( "Longitude must be between -180 and 180." );
-            }
+        }
+
+        private static void Validate( UpdatePropertyRequest request )
+        {
+            if ( string.IsNullOrWhiteSpace( request.Name ) )
+                throw new ValidationException( "Property name is required." );
+
+            if ( string.IsNullOrWhiteSpace( request.Country ) )
+                throw new ValidationException( "Country is required." );
+
+            if ( string.IsNullOrWhiteSpace( request.City ) )
+                throw new ValidationException( "City is required." );
+
+            if ( string.IsNullOrWhiteSpace( request.Address ) )
+                throw new ValidationException( "Address is required." );
+
+            if ( request.Latitude < -90 || request.Latitude > 90 )
+                throw new ValidationException( "Latitude must be between -90 and 90." );
+
+            if ( request.Longitude < -180 || request.Longitude > 180 )
+                throw new ValidationException( "Longitude must be between -180 and 180." );
         }
     }
 }
+

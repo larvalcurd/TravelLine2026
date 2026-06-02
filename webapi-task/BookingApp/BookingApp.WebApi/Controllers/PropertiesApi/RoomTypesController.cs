@@ -47,8 +47,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public ActionResult<RoomTypeDto> Create( Guid propertyId, [FromBody] CreateRoomTypeDto dto )
         {
-            var roomTypeEntity = dto.ToEntity( propertyId );
-            var created = _roomTypeService.Create( propertyId, roomTypeEntity );
+            var request = dto.ToCreateRequest();
+            var created = _roomTypeService.Create( propertyId, request );
+
             return CreatedAtAction( nameof( GetById ), new { id = created.Id }, created.ToDto() );
         }
 
@@ -83,9 +84,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public IActionResult Update( Guid id, [FromBody] UpdateRoomTypeDto dto )
         {
-            var existing = _roomTypeService.GetById( id );
-            var roomTypeEntity = dto.ToEntity( id, existing.PropertyId );
-            _roomTypeService.Update( id, roomTypeEntity );
+            var request = dto.ToUpdateRequest();
+            _roomTypeService.Update( id, request );
+
             return NoContent();
         }
 
