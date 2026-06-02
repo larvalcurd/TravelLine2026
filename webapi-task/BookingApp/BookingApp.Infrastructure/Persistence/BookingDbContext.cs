@@ -5,9 +5,9 @@ namespace BookingApp.Infrastructure.Persistence
 {
     public class BookingDbContext( DbContextOptions<BookingDbContext> options ) : DbContext( options )
     {
-        public DbSet<Property> Properties => Set<Property>();
-        public DbSet<RoomType> RoomTypes => Set<RoomType>();
-        public DbSet<Reservation> Reservations => Set<Reservation>();
+        public DbSet<Property> Properties { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
         protected override void OnModelCreating( ModelBuilder modelBuilder )
         {

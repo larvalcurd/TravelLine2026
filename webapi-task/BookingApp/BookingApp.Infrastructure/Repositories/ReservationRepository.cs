@@ -6,22 +6,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.Infrastructure.Repositories
 {
-    public class EfReservationRepository( BookingDbContext context ) : IReservationRepository
+    public class ReservationRepository( BookingDbContext context ) : IReservationRepository
     {
-        private readonly BookingDbContext _context = context;
+        private DbSet<Reservation> Reservations => context.Reservations;
 
         public IReadOnlyCollection<Reservation> GetAll()
         {
-            return _context.Reservations
+            return Reservations
                 .AsNoTracking()
                 .ToList();
         }
 
         public Reservation? GetById( Guid id )
         {
-            return _context.Reservations
-                .AsNoTracking()
-                .FirstOrDefault( r => r.Id == id );
+            return Reservations.FirstOrDefault( r => r.Id == id );
         }
 
         public IReadOnlyCollection<Reservation> GetOverlappingReservations(
@@ -31,7 +29,7 @@ namespace BookingApp.Infrastructure.Repositories
         {
             var idSet = roomTypeIds.ToHashSet();
 
-            return _context.Reservations
+            return Reservations
                 .AsNoTracking()
                 .Where( r => !r.IsCanceled )
                 .Where( r => idSet.Contains( r.RoomTypeId ) )
@@ -44,7 +42,7 @@ namespace BookingApp.Infrastructure.Repositories
             DateOnly arrival,
             DateOnly departure )
         {
-            return _context.Reservations
+            return Reservations
                 .Count( r =>
                         !r.IsCanceled &&
                         r.RoomTypeId == roomTypeId &&
@@ -54,7 +52,7 @@ namespace BookingApp.Infrastructure.Repositories
 
         public IReadOnlyCollection<Reservation> GetByFilter( ReservationFilter filter )
         {
-            IQueryable<Reservation> query = _context.Reservations.AsNoTracking();
+            IQueryable<Reservation> query = Reservations.AsNoTracking();
 
             if ( !filter.IncludeCanceled )
             {
@@ -101,27 +99,24 @@ namespace BookingApp.Infrastructure.Repositories
 
         public bool HasReservationsForProperty( Guid propertyId )
         {
-            return _context.Reservations.Any( r => r.PropertyId == propertyId && !r.IsCanceled );
+            return Reservations.Any( r => r.PropertyId == propertyId && !r.IsCanceled );
         }
 
         public bool HasReservationsForRoomType( Guid id )
         {
-            return _context.Reservations.Any( r => r.RoomTypeId == id && !r.IsCanceled );
+            return Reservations.Any( r => r.RoomTypeId == id && !r.IsCanceled );
         }
 
         public void Add( Reservation reservation )
         {
-            _context.Reservations.Add( reservation );
-            _context.SaveChanges();
+            Reservations.Add( reservation );
+            context.SaveChanges();
         }
 
         public void Update( Reservation reservation )
         {
-            var existing = _context.Reservations.Find( reservation.Id )
-                ?? throw new InvalidOperationException( $"Reservation with id '{reservation.Id}' was not found." );
-
-            _context.Entry( existing ).CurrentValues.SetValues( reservation );
-            _context.SaveChanges();
+            Reservations.Update( reservation );
+            context.SaveChanges();
         }
     }
 }

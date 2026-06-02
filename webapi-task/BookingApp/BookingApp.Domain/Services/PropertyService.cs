@@ -5,45 +5,20 @@ using BookingApp.Domain.Interfaces.Services;
 
 namespace BookingApp.Domain.Services
 {
-    public class PropertyService( IPropertyRepository propertyRepository, IRoomTypeRepository roomTypeRepository, IReservationRepository reservationRepository ) : IPropertyService
+    public class PropertyService( IPropertyRepository propertyRepository, IReservationRepository reservationRepository ) : IPropertyService
     {
         private readonly IPropertyRepository _propertyRepository = propertyRepository;
-        private readonly IRoomTypeRepository _roomTypeRepository = roomTypeRepository;
         private readonly IReservationRepository _reservationRepository = reservationRepository;
 
         public IReadOnlyCollection<Property> GetAll()
         {
-
-            var properties = _propertyRepository.GetAll().ToList();
-
-            if ( properties.Count == 0 )
-            {
-                return [];
-            }
-
-            var propertyIds = properties.Select( p => p.Id ).ToList();
-
-            var allRoomTypes = _roomTypeRepository.GetByPropertyIds( propertyIds ).GroupBy( rt => rt.PropertyId ).ToDictionary( g => g.Key, g => g.ToList() );
-
-            foreach ( var property in properties )
-            {
-                if ( allRoomTypes.TryGetValue( property.Id, out var roomTypes ) )
-                {
-                    property.RoomTypes = roomTypes;
-                }
-                else
-                {
-                    property.RoomTypes = [];
-                }
-            }
-
-            return properties;
+            return _propertyRepository.GetAll();
         }
 
         public Property GetById( Guid id )
         {
-            Property? property = _propertyRepository.GetById( id ) ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
-            return AttachRoomTypes( property );
+            return _propertyRepository.GetById( id )
+                ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
         }
 
         public Property Create( Property property )
@@ -62,38 +37,32 @@ namespace BookingApp.Domain.Services
             };
 
             _propertyRepository.Add( entity );
-            return AttachRoomTypes( entity );
+            return entity;
         }
 
         public Property Update( Guid id, Property property )
         {
-            Property existing = _propertyRepository.GetById( id ) ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
+            Property existing = _propertyRepository.GetById( id )
+                ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
 
             Validate( property );
 
-            var updated = new Property
-            {
-                Id = existing.Id,
-                Name = property.Name.Trim(),
-                Country = property.Country.Trim(),
-                City = property.City.Trim(),
-                Address = property.Address.Trim(),
-                Latitude = property.Latitude,
-                Longitude = property.Longitude
-            };
+            existing.Name = property.Name.Trim();
+            existing.Country = property.Country.Trim();
+            existing.City = property.City.Trim();
+            existing.Address = property.Address.Trim();
+            existing.Latitude = property.Latitude;
+            existing.Longitude = property.Longitude;
 
-            _propertyRepository.Update( updated );
-            return AttachRoomTypes( updated );
+            _propertyRepository.Update( existing );
+
+            return existing;
         }
 
         public void Delete( Guid id )
         {
-            var existing = _propertyRepository.GetById( id ) ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
-
-            if ( _roomTypeRepository.HasRoomTypesForProperty( id ) )
-            {
-                throw new ValidationException( "Cannot delete property with existing room types." );
-            }
+            var existing = _propertyRepository.GetById( id )
+                ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
 
             if ( _reservationRepository.HasReservationsForProperty( id ) )
             {
@@ -139,12 +108,6 @@ namespace BookingApp.Domain.Services
             {
                 throw new ValidationException( "Longitude must be between -180 and 180." );
             }
-        }
-
-        private Property AttachRoomTypes( Property property )
-        {
-            property.RoomTypes = _roomTypeRepository.GetByPropertyId( property.Id ).ToList();
-            return property;
         }
     }
 }

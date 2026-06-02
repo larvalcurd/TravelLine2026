@@ -14,12 +14,11 @@ namespace BookingApp.Infrastructure.Extensions
             services.AddDbContext<BookingDbContext>( options =>
                 options.UseSqlite( configuration.GetConnectionString( "BookingDatabase" ) ) );
 
-            services.AddScoped<IPropertyRepository, EfPropertyRepository>();
-            services.AddScoped<IRoomTypeRepository, EfRoomTypeRepository>();
-            services.AddScoped<IReservationRepository, EfReservationRepository>();
+            services.AddScoped<IPropertyRepository, PropertyRepository>();
+            services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
+            services.AddScoped<IReservationRepository, ReservationRepository>();
 
             return services;
         }
     }
-
 }

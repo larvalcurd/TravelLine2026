@@ -16,5 +16,4 @@ namespace BookingApp.Domain.Entities
         public List<string> Services { get; set; } = [];
         public List<string> Amenities { get; set; } = [];
     }
-
 }

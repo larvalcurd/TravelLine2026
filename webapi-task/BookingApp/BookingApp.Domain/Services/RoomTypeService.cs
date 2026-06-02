@@ -50,26 +50,22 @@ namespace BookingApp.Domain.Services
 
         public RoomType Update( Guid id, RoomType roomType )
         {
-            var existing = _roomTypeRepository.GetById( id ) ?? throw new NotFoundException( $"Room type with id '{id}' was not found." );
+            var existing = _roomTypeRepository.GetById( id )
+                ?? throw new NotFoundException( $"Room type with id '{id}' was not found." );
 
             Validate( roomType );
 
-            var updated = new RoomType
-            {
-                Id = existing.Id,
-                PropertyId = existing.PropertyId,
-                Name = roomType.Name.Trim(),
-                DailyPrice = roomType.DailyPrice,
-                Currency = roomType.Currency.Trim(),
-                MinPersonCount = roomType.MinPersonCount,
-                MaxPersonCount = roomType.MaxPersonCount,
-                TotalRoomsCount = roomType.TotalRoomsCount,
-                Services = roomType.Services?.Select( x => x.Trim() ).Where( x => !string.IsNullOrWhiteSpace( x ) ).ToList() ?? [],
-                Amenities = roomType.Amenities?.Select( x => x.Trim() ).Where( x => !string.IsNullOrWhiteSpace( x ) ).ToList() ?? []
-            };
+            existing.Name = roomType.Name.Trim();
+            existing.DailyPrice = roomType.DailyPrice;
+            existing.Currency = roomType.Currency.Trim();
+            existing.MinPersonCount = roomType.MinPersonCount;
+            existing.MaxPersonCount = roomType.MaxPersonCount;
+            existing.TotalRoomsCount = roomType.TotalRoomsCount;
+            existing.Services = roomType.Services;
+            existing.Amenities = roomType.Amenities;
 
-            _roomTypeRepository.Update( updated );
-            return updated;
+            _roomTypeRepository.Update( existing );
+            return existing;
         }
 
         public void Delete( Guid id )

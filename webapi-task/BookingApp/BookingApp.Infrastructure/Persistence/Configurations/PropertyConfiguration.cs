@@ -25,7 +25,7 @@ namespace BookingApp.Infrastructure.Persistence.Configurations
             builder.HasMany( p => p.RoomTypes )
                 .WithOne()
                 .HasForeignKey( rt => rt.PropertyId )
-                .OnDelete( DeleteBehavior.Restrict );
+                .OnDelete( DeleteBehavior.Cascade );
 
             builder.HasIndex( p => p.City );
         }
