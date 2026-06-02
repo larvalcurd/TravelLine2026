@@ -37,7 +37,7 @@ public class SearchService(
         }
 
         var overlappingCounts = GetOverlappingCounts( candidateRoomTypes.Select( rt => rt.Id ), criteria );
-        var nights = criteria.DepartureDate.DayNumber - criteria.ArrivalDate.DayNumber;
+        int nights = criteria.DepartureDate.DayNumber - criteria.ArrivalDate.DayNumber;
 
         return BuildAvailableOptions( candidateRoomTypes, propertiesInCity, overlappingCounts, nights );
     }
