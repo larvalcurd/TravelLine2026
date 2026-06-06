@@ -13,5 +13,21 @@ namespace BookingApp.Domain.Entities
         public required decimal Longitude { get; set; }
 
         public ICollection<RoomType> RoomTypes { get; set; } = [];
+
+        public void Update(
+            string name,
+            string country,
+            string city,
+            string address,
+            decimal latitude,
+            decimal longitude )
+        {
+            Name = name;
+            Country = country;
+            City = city;
+            Address = address;
+            Latitude = latitude;
+            Longitude = longitude;
+        }
     }
 }

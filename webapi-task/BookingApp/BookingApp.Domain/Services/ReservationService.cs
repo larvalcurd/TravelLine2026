@@ -89,7 +89,7 @@ public class ReservationService(
             return;
         }
 
-        reservation.IsCanceled = true;
+        reservation.Cancel();
         _reservationRepository.Update( reservation );
     }
 

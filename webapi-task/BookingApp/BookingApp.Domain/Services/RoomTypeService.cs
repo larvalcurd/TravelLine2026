@@ -57,14 +57,15 @@ namespace BookingApp.Domain.Services
 
             Validate( request );
 
-            existing.Name = request.Name.Trim();
-            existing.DailyPrice = request.DailyPrice;
-            existing.Currency = request.Currency.Trim();
-            existing.MinPersonCount = request.MinPersonCount;
-            existing.MaxPersonCount = request.MaxPersonCount;
-            existing.TotalRoomsCount = request.TotalRoomsCount;
-            existing.Services = NormalizeList( request.Services );
-            existing.Amenities = NormalizeList( request.Amenities );
+            existing.Update(
+                request.Name.Trim(),
+                request.DailyPrice,
+                request.Currency.Trim(),
+                request.MinPersonCount,
+                request.MaxPersonCount,
+                request.TotalRoomsCount,
+                NormalizeList( request.Services ),
+                NormalizeList( request.Amenities ) );
 
             _roomTypeRepository.Update( existing );
             return existing;

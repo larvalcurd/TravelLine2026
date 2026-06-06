@@ -48,12 +48,13 @@ namespace BookingApp.Domain.Services
 
             Validate( request );
 
-            existing.Name = request.Name.Trim();
-            existing.Country = request.Country.Trim();
-            existing.City = request.City.Trim();
-            existing.Address = request.Address.Trim();
-            existing.Latitude = request.Latitude;
-            existing.Longitude = request.Longitude;
+            existing.Update(
+                request.Name.Trim(),
+                request.Country.Trim(),
+                request.City.Trim(),
+                request.Address.Trim(),
+                request.Latitude,
+                request.Longitude );
 
             _propertyRepository.Update( existing );
 

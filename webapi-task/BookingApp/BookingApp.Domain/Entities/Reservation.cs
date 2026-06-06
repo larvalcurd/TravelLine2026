@@ -20,5 +20,10 @@ namespace BookingApp.Domain.Entities
         public required string Currency { get; set; }
 
         public bool IsCanceled { get; set; }
+
+        public void Cancel()
+        {
+            IsCanceled = true;
+        }
     }
 }
