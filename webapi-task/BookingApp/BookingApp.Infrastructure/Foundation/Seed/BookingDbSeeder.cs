@@ -296,34 +296,34 @@ namespace BookingApp.Infrastructure.Foundation.Seed
 
         private static void AddMissingProperties( BookingDbContext dbContext, IReadOnlyCollection<Property> properties )
         {
-            var existingIds = dbContext.Properties.Select( property => property.Id ).ToHashSet();
+            var existingIds = dbContext.Set<Property>().Select( property => property.Id ).ToHashSet();
             var missingProperties = properties.Where( property => !existingIds.Contains( property.Id ) ).ToList();
 
             if ( missingProperties.Count > 0 )
             {
-                dbContext.Properties.AddRange( missingProperties );
+                dbContext.Set<Property>().AddRange( missingProperties );
             }
         }
 
         private static void AddMissingRoomTypes( BookingDbContext dbContext, IReadOnlyCollection<RoomType> roomTypes )
         {
-            var existingIds = dbContext.RoomTypes.Select( roomType => roomType.Id ).ToHashSet();
+            var existingIds = dbContext.Set<RoomType>().Select( roomType => roomType.Id ).ToHashSet();
             var missingRoomTypes = roomTypes.Where( roomType => !existingIds.Contains( roomType.Id ) ).ToList();
 
             if ( missingRoomTypes.Count > 0 )
             {
-                dbContext.RoomTypes.AddRange( missingRoomTypes );
+                dbContext.Set<RoomType>().AddRange( missingRoomTypes );
             }
         }
 
         private static void AddMissingReservations( BookingDbContext dbContext, IReadOnlyCollection<Reservation> reservations )
         {
-            var existingIds = dbContext.Reservations.Select( reservation => reservation.Id ).ToHashSet();
+            var existingIds = dbContext.Set<Reservation>().Select( reservation => reservation.Id ).ToHashSet();
             var missingReservations = reservations.Where( reservation => !existingIds.Contains( reservation.Id ) ).ToList();
 
             if ( missingReservations.Count > 0 )
             {
-                dbContext.Reservations.AddRange( missingReservations );
+                dbContext.Set<Reservation>().AddRange( missingReservations );
             }
         }
     }

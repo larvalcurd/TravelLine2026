@@ -1,13 +1,13 @@
 using BookingApp.Domain.Entities;
 using BookingApp.Domain.Interfaces.Repositories;
-using BookingApp.Infrastructure.Persistence;
+using BookingApp.Infrastructure.Foundation;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.Infrastructure.Repositories
 {
     public class PropertyRepository( BookingDbContext context ) : IPropertyRepository
     {
-        private DbSet<Property> Properties => context.Properties;
+        private DbSet<Property> Properties => context.Set<Property>();
         public async Task<IReadOnlyCollection<Property>> GetAllAsync()
         {
             return await Properties.AsNoTracking()

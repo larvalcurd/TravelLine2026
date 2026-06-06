@@ -1,14 +1,14 @@
 using BookingApp.Domain.Entities;
 using BookingApp.Domain.Interfaces.Repositories;
 using BookingApp.Domain.Models;
-using BookingApp.Infrastructure.Persistence;
+using BookingApp.Infrastructure.Foundation;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.Infrastructure.Repositories
 {
     public class ReservationRepository( BookingDbContext context ) : IReservationRepository
     {
-        private DbSet<Reservation> Reservations => context.Reservations;
+        private DbSet<Reservation> Reservations => context.Set<Reservation>();
 
         public async Task<IReadOnlyCollection<Reservation>> GetAllAsync()
         {
