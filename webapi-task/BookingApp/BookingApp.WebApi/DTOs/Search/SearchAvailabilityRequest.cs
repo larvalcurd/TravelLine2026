@@ -3,7 +3,7 @@ namespace BookingApp.WebApi.DTOs.Search
     /// <summary>
     /// Query-параметры для поиска доступных вариантов размещения.
     /// </summary>
-    public class SearchAvailabilityQueryDto
+    public class SearchAvailabilityRequest
     {
         /// <summary>
         /// Город, в котором выполняется поиск.

@@ -22,12 +22,12 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <response code="200">Список категорий номеров успешно получен.</response>
         /// <response code="404">Объект размещения с указанным идентификатором не найден.</response>
         [HttpGet( "api/properties/{propertyId:guid}/roomtypes" )]
-        [ProducesResponseType( typeof( IReadOnlyCollection<RoomTypeDto> ), StatusCodes.Status200OK )]
+        [ProducesResponseType( typeof( IReadOnlyCollection<RoomTypeResponse> ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public async Task<ActionResult<IReadOnlyCollection<RoomTypeDto>>> GetByPropertyId( Guid propertyId )
+        public async Task<ActionResult<IReadOnlyCollection<RoomTypeResponse>>> GetByPropertyId( Guid propertyId )
         {
             var roomTypes = await _roomTypeService.GetByPropertyIdAsync( propertyId );
-            var response = roomTypes.Select( rt => rt.ToDto() ).ToList();
+            var response = roomTypes.Select( rt => rt.ToResponse() ).ToList();
             return Ok( response );
         }
 
@@ -35,22 +35,22 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// Создает новую категорию номеров для указанного объекта размещения.
         /// </summary>
         /// <param name="propertyId">Идентификатор объекта размещения.</param>
-        /// <param name="dto">Данные создаваемой категории номеров.</param>
+        /// <param name="request">Данные создаваемой категории номеров.</param>
         /// <returns>Созданная категория номеров.</returns>
         /// <response code="201">Категория номеров успешно создана.</response>
         /// <response code="400">Переданы некорректные данные категории номеров.</response>
         /// <response code="404">Объект размещения с указанным идентификатором не найден.</response>
         [HttpPost( "api/properties/{propertyId:guid}/roomtypes" )]
         [Consumes( "application/json" )]
-        [ProducesResponseType( typeof( RoomTypeDto ), StatusCodes.Status201Created )]
+        [ProducesResponseType( typeof( RoomTypeResponse ), StatusCodes.Status201Created )]
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public ActionResult<RoomTypeDto> Create( Guid propertyId, [FromBody] CreateRoomTypeDto dto )
+        public ActionResult<RoomTypeResponse> Create( Guid propertyId, [FromBody] CreateRoomTypeRequest request )
         {
-            var request = dto.ToCreateRequest();
-            var created = _roomTypeService.Create( propertyId, request );
+            var domainRequest = request.ToDomainRequest();
+            var created = _roomTypeService.Create( propertyId, domainRequest );
 
-            return CreatedAtAction( nameof( GetById ), new { id = created.Id }, created.ToDto() );
+            return CreatedAtAction( nameof( GetById ), new { id = created.Id }, created.ToResponse() );
         }
 
         /// <summary>
@@ -61,19 +61,19 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <response code="200">Категория номера найдена.</response>
         /// <response code="404">Категория номера с указанным идентификатором не найдена.</response>
         [HttpGet( "api/roomtypes/{id:guid}" )]
-        [ProducesResponseType( typeof( RoomTypeDto ), StatusCodes.Status200OK )]
+        [ProducesResponseType( typeof( RoomTypeResponse ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public async Task<ActionResult<RoomTypeDto>> GetById( Guid id )
+        public async Task<ActionResult<RoomTypeResponse>> GetById( Guid id )
         {
             var roomType = await _roomTypeService.GetByIdAsync( id );
-            return Ok( roomType.ToDto() );
+            return Ok( roomType.ToResponse() );
         }
 
         /// <summary>
         /// Обновляет категорию номера.
         /// </summary>
         /// <param name="id">Идентификатор обновляемой категории номера.</param>
-        /// <param name="dto">Новые данные категории номера.</param>
+        /// <param name="request">Новые данные категории номера.</param>
         /// <response code="204">Категория номера успешно обновлена.</response>
         /// <response code="400">Переданы некорректные данные категории номера.</response>
         /// <response code="404">Категория номера с указанным идентификатором не найдена.</response>
@@ -82,10 +82,10 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status204NoContent )]
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public IActionResult Update( Guid id, [FromBody] UpdateRoomTypeDto dto )
+        public IActionResult Update( Guid id, [FromBody] UpdateRoomTypeRequest request )
         {
-            var request = dto.ToUpdateRequest();
-            _roomTypeService.Update( id, request );
+            var domainReguest = request.ToDomainRequest();
+            _roomTypeService.Update( id, domainReguest );
 
             return NoContent();
         }

@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BookingApp.WebApi.Validators
 {
-    public class ReservationFilterDtoValidator : AbstractValidator<ReservationFilterDto>
+    public class ReservationFilterRequestValidator : AbstractValidator<ReservationFilterRequest>
     {
-        public ReservationFilterDtoValidator()
+        public ReservationFilterRequestValidator()
         {
             RuleFor( x => x.ArrivalDateFrom )
                 .LessThanOrEqualTo( x => x.ArrivalDateTo!.Value )

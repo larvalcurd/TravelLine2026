@@ -1,58 +1,56 @@
 namespace BookingApp.WebApi.DTOs.RoomTypes
 {
     /// <summary>
-    /// Представление категории номеров в ответах API.
+    /// Данные для обновления категории номеров.
     /// </summary>
-    public class RoomTypeDto
+    public class UpdateRoomTypeRequest
     {
         /// <summary>
-        /// Уникальный идентификатор категории номера.
+        /// Новое название категории номера.
         /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// Идентификатор объекта размещения, которому принадлежит категория номера.
-        /// </summary>
-        public Guid PropertyId { get; set; }
-
-        /// <summary>
-        /// Название категории номера.
-        /// </summary>
-        public required string Name { get; set; }
+        /// <example>Standard</example>
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Цена за одну ночь.
         /// </summary>
+        /// <example>5000</example>
         public decimal DailyPrice { get; set; }
 
         /// <summary>
-        /// Валюта цены.
+        /// Валюта цены в трехбуквенном формате.
         /// </summary>
-        public required string Currency { get; set; }
+        /// <example>RUB</example>
+        public string Currency { get; set; } = string.Empty;
 
         /// <summary>
         /// Минимальное количество гостей для этой категории номера.
         /// </summary>
+        /// <example>1</example>
         public int MinPersonCount { get; set; }
 
         /// <summary>
         /// Максимальное количество гостей для этой категории номера.
         /// </summary>
+        /// <example>2</example>
         public int MaxPersonCount { get; set; }
 
         /// <summary>
         /// Общее количество физических номеров этой категории в объекте размещения.
         /// </summary>
+        /// <example>10</example>
         public int TotalRoomsCount { get; set; }
 
         /// <summary>
         /// Сервисы, включенные в категорию номера.
         /// </summary>
+        /// <example>["Breakfast"]</example>
         public IReadOnlyCollection<string> Services { get; set; } = [];
 
         /// <summary>
         /// Удобства, доступные в категории номера.
         /// </summary>
+        /// <example>["Wi-Fi", "Air conditioning"]</example>
         public IReadOnlyCollection<string> Amenities { get; set; } = [];
     }
 }

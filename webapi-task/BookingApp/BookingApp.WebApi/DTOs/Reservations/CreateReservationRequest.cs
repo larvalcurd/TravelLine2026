@@ -3,7 +3,7 @@ namespace BookingApp.WebApi.DTOs.Reservations
     /// <summary>
     /// Данные для создания бронирования.
     /// </summary>
-    public class CreateReservationDto
+    public class CreateReservationRequest
     {
         /// <summary>
         /// Идентификатор объекта размещения.

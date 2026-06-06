@@ -3,7 +3,7 @@ namespace BookingApp.WebApi.DTOs.Reservations
     /// <summary>
     /// Представление бронирования в ответах API.
     /// </summary>
-    public class ReservationDto
+    public class ReservationResponse
     {
         /// <summary>
         /// Уникальный идентификатор бронирования.

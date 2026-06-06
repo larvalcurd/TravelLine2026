@@ -1,5 +1,5 @@
-using BookingApp.Infrastructure.Persistence;
-using BookingApp.Infrastructure.Persistence.Seed;
+using BookingApp.Infrastructure.Foundation;
+using BookingApp.Infrastructure.Foundation.Seed;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.WebApi.Extensions

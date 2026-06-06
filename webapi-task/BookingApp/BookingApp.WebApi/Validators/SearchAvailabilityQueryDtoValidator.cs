@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BookingApp.WebApi.Validators
 {
-    public class SearchAvailabilityQueryDtoValidator : AbstractValidator<SearchAvailabilityQueryDto>
+    public class SearchAvailabilityRequestValidator : AbstractValidator<SearchAvailabilityRequest>
     {
-        public SearchAvailabilityQueryDtoValidator()
+        public SearchAvailabilityRequestValidator()
         {
             RuleFor( x => x.City )
                 .NotEmpty()

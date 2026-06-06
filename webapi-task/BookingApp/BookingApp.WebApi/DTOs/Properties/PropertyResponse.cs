@@ -1,14 +1,20 @@
 namespace BookingApp.WebApi.DTOs.Properties
 {
     /// <summary>
-    /// Данные для обновления объекта размещения.
+    /// Представление объекта размещения в ответах API.
     /// </summary>
-    public class UpdatePropertyDto
+    public class PropertyResponse
     {
         /// <summary>
-        /// Новое название объекта размещения.
+        /// Уникальный идентификатор объекта размещения.
         /// </summary>
-        /// <example>Grand Test Hotel</example>
+        /// <example>3fa85f64-5717-4562-b3fc-2c963f66afa6</example>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// Название объекта размещения.
+        /// </summary>
+        /// <example>Grand Hotel</example>
         public required string Name { get; set; }
 
         /// <summary>
@@ -26,19 +32,19 @@ namespace BookingApp.WebApi.DTOs.Properties
         /// <summary>
         /// Точный адрес объекта размещения.
         /// </summary>
-        /// <example>Tverskaya 1</example>
+        /// <example>Tverskaya Street, 1</example>
         public required string Address { get; set; }
 
         /// <summary>
-        /// Географическая широта. Допустимый диапазон: от -90 до 90.
+        /// Географическая широта.
         /// </summary>
         /// <example>55.7558</example>
         public decimal Latitude { get; set; }
 
         /// <summary>
-        /// Географическая долгота. Допустимый диапазон: от -180 до 180.
+        /// Географическая долгота.
         /// </summary>
-        /// <example>37.6173</example>
+        /// <example>37.6176</example>
         public decimal Longitude { get; set; }
     }
 }

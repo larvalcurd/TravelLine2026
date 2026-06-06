@@ -21,11 +21,11 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <returns>Список объектов размещения.</returns>
         /// <response code="200">Список объектов размещения успешно получен.</response>
         [HttpGet]
-        [ProducesResponseType( typeof( IReadOnlyCollection<PropertyDto> ), StatusCodes.Status200OK )]
-        public async Task<ActionResult<IReadOnlyCollection<PropertyDto>>> GetAll()
+        [ProducesResponseType( typeof( IReadOnlyCollection<PropertyResponse> ), StatusCodes.Status200OK )]
+        public async Task<ActionResult<IReadOnlyCollection<PropertyResponse>>> GetAll()
         {
             var properties = await _propertyService.GetAllAsync();
-            var response = properties.Select( p => p.ToDto() ).ToList();
+            var response = properties.Select( p => p.ToResponse() ).ToList();
             return Ok( response );
         }
 
@@ -37,38 +37,38 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <response code="200">Объект размещения найден.</response>
         /// <response code="404">Объект размещения с указанным идентификатором не найден.</response>
         [HttpGet( "{id:guid}" )]
-        [ProducesResponseType( typeof( PropertyDto ), StatusCodes.Status200OK )]
+        [ProducesResponseType( typeof( PropertyResponse ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public async Task<ActionResult<PropertyDto>> GetById( Guid id )
+        public async Task<ActionResult<PropertyResponse>> GetById( Guid id )
         {
             var property = await _propertyService.GetByIdAsync( id );
-            return Ok( property.ToDto() );
+            return Ok( property.ToResponse() );
         }
 
         /// <summary>
         /// Создает новый объект размещения.
         /// </summary>
-        /// <param name="dto">Данные создаваемого объекта размещения.</param>
+        /// <param name="request">Данные создаваемого объекта размещения.</param>
         /// <returns>Созданный объект размещения.</returns>
         /// <response code="201">Объект размещения успешно создан.</response>
         /// <response code="400">Переданы некорректные данные объекта размещения.</response>
         [HttpPost]
         [Consumes( "application/json" )]
-        [ProducesResponseType( typeof( PropertyDto ), StatusCodes.Status201Created )]
+        [ProducesResponseType( typeof( PropertyResponse ), StatusCodes.Status201Created )]
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
-        public ActionResult<PropertyDto> Create( [FromBody] CreatePropertyDto dto )
+        public ActionResult<PropertyResponse> Create( [FromBody] CreatePropertyRequest request )
         {
-            var request = dto.ToCreateRequest();
-            var created = _propertyService.Create( request );
+            var domainRequest = request.ToDomainRequest();
+            var created = _propertyService.Create( domainRequest );
 
-            return CreatedAtAction( nameof( GetById ), new { id = created.Id }, created.ToDto() );
+            return CreatedAtAction( nameof( GetById ), new { id = created.Id }, created.ToResponse() );
         }
 
         /// <summary>
         /// Обновляет объект размещения.
         /// </summary>
         /// <param name="id">Идентификатор обновляемого объекта размещения.</param>
-        /// <param name="dto">Новые данные объекта размещения.</param>
+        /// <param name="request">Новые данные объекта размещения.</param>
         /// <response code="204">Объект размещения успешно обновлен.</response>
         /// <response code="400">Переданы некорректные данные объекта размещения.</response>
         /// <response code="404">Объект размещения с указанным идентификатором не найден.</response>
@@ -77,10 +77,10 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status204NoContent )]
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public IActionResult Update( Guid id, [FromBody] UpdatePropertyDto dto )
+        public IActionResult Update( Guid id, [FromBody] UpdatePropertyRequest request )
         {
-            var request = dto.ToUpdateRequest();
-            _propertyService.Update( id, request );
+            var domainRequest = request.ToDomainRequest();
+            _propertyService.Update( id, domainRequest );
             return NoContent();
         }
 

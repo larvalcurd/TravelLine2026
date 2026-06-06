@@ -3,7 +3,7 @@ namespace BookingApp.WebApi.DTOs.Reservations
     /// <summary>
     /// Query-параметры для фильтрации списка бронирований.
     /// </summary>
-    public class ReservationFilterDto
+    public class ReservationFilterRequest
     {
         /// <summary>
         /// Фильтр по идентификатору объекта размещения.

@@ -1,16 +1,19 @@
 using BookingApp.Domain.Entities;
-using BookingApp.Domain.Models;
 using BookingApp.WebApi.DTOs.Properties;
+
+using DomainCreatePropertyReq = BookingApp.Domain.Models.CreatePropertyRequest;
+using DomainUpdatePropertyReq = BookingApp.Domain.Models.UpdatePropertyRequest;
+
 
 namespace BookingApp.WebApi.Mappings
 {
     public static class PropertyMappingExtensions
     {
-        public static PropertyDto ToDto( this Property property )
+        public static PropertyResponse ToResponse( this Property property )
         {
             if ( property == null ) return null!;
 
-            return new PropertyDto
+            return new PropertyResponse
             {
                 Id = property.Id,
                 Name = property.Name,
@@ -22,29 +25,29 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static CreatePropertyRequest ToCreateRequest( this CreatePropertyDto dto )
+        public static DomainCreatePropertyReq ToDomainRequest( this CreatePropertyRequest apiRequest )
         {
-            return new CreatePropertyRequest
+            return new DomainCreatePropertyReq
             {
-                Name = dto.Name,
-                Country = dto.Country,
-                City = dto.City,
-                Address = dto.Address,
-                Latitude = dto.Latitude,
-                Longitude = dto.Longitude
+                Name = apiRequest.Name,
+                Country = apiRequest.Country,
+                City = apiRequest.City,
+                Address = apiRequest.Address,
+                Latitude = apiRequest.Latitude,
+                Longitude = apiRequest.Longitude
             };
         }
 
-        public static UpdatePropertyRequest ToUpdateRequest( this UpdatePropertyDto dto )
+        public static DomainUpdatePropertyReq ToDomainRequest( this UpdatePropertyRequest apiRequest )
         {
-            return new UpdatePropertyRequest
+            return new DomainUpdatePropertyReq
             {
-                Name = dto.Name,
-                Country = dto.Country,
-                City = dto.City,
-                Address = dto.Address,
-                Latitude = dto.Latitude,
-                Longitude = dto.Longitude
+                Name = apiRequest.Name,
+                Country = apiRequest.Country,
+                City = apiRequest.City,
+                Address = apiRequest.Address,
+                Latitude = apiRequest.Latitude,
+                Longitude = apiRequest.Longitude
             };
         }
     }

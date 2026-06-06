@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BookingApp.WebApi.Validators
 {
-    public class CreateRoomTypeDtoValidator : AbstractValidator<CreateRoomTypeDto>
+    public class CreateRoomTypeRequestValidator : AbstractValidator<CreateRoomTypeRequest>
     {
-        public CreateRoomTypeDtoValidator()
+        public CreateRoomTypeRequestValidator()
         {
             RuleFor( x => x.Name ).NotEmpty().MaximumLength( 200 );
             RuleFor( x => x.DailyPrice ).GreaterThan( 0 );

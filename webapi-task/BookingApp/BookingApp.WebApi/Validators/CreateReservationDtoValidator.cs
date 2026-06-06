@@ -4,9 +4,9 @@ using System;
 
 namespace BookingApp.WebApi.Validators
 {
-    public class CreateReservationDtoValidator : AbstractValidator<CreateReservationDto>
+    public class CreateReservationRequestValidator : AbstractValidator<CreateReservationRequest>
     {
-        public CreateReservationDtoValidator()
+        public CreateReservationRequestValidator()
         {
             RuleFor( x => x.PropertyId )
                 .NotEmpty()

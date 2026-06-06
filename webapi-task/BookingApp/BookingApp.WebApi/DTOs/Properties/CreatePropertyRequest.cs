@@ -3,7 +3,7 @@ namespace BookingApp.WebApi.DTOs.Properties
     /// <summary>
     /// Данные для создания нового объекта размещения.
     /// </summary>
-    public class CreatePropertyDto
+    public class CreatePropertyRequest
     {
         /// <summary>
         /// Название объекта размещения.

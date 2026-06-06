@@ -5,25 +5,25 @@ namespace BookingApp.WebApi.Mappings
 {
     public static class SearchMappingExtensions
     {
-        public static SearchAvailabilityCriteria ToCriteria( this SearchAvailabilityQueryDto dto )
+        public static SearchAvailabilityCriteria ToDomainCriteria( this SearchAvailabilityRequest request )
         {
-            if ( dto == null ) return null!;
+            if ( request == null ) return null!;
 
             return new SearchAvailabilityCriteria
             {
-                City = dto.City,
-                ArrivalDate = dto.ArrivalDate,
-                DepartureDate = dto.DepartureDate,
-                Guests = dto.Guests,
-                MaxPrice = dto.MaxPrice,
+                City = request.City,
+                ArrivalDate = request.ArrivalDate,
+                DepartureDate = request.DepartureDate,
+                Guests = request.Guests,
+                MaxPrice = request.MaxPrice,
             };
 
         }
-        public static SearchAvailabilityResultDto ToDto( this AvailableRoomOption option )
+        public static SearchAvailabilityResponse ToResponse( this AvailableRoomOption option )
         {
             if ( option == null ) return null!;
 
-            return new SearchAvailabilityResultDto
+            return new SearchAvailabilityResponse
             {
                 PropertyId = option.PropertyId,
                 PropertyName = option.PropertyName,

@@ -1,34 +1,39 @@
 using BookingApp.Domain.Entities;
-using BookingApp.Domain.Models;
 using BookingApp.WebApi.DTOs.Reservations;
+
+using ApiCreateReservationRequest = BookingApp.WebApi.DTOs.Reservations.CreateReservationRequest;
+using ApiReservationFilterRequest = BookingApp.WebApi.DTOs.Reservations.ReservationFilterRequest;
+
+using DomainCreateReservationRequest = BookingApp.Domain.Models.CreateReservationRequest;
+using DomainReservationFilter = BookingApp.Domain.Models.ReservationFilter;
 
 namespace BookingApp.WebApi.Mappings
 {
     public static class ReservationMappingExtensions
     {
-        public static CreateReservationRequest ToRequest( this CreateReservationDto dto )
+        public static DomainCreateReservationRequest ToDomainRequest( this ApiCreateReservationRequest request )
         {
-            if ( dto == null ) return null!;
+            if ( request == null ) return null!;
 
-            return new CreateReservationRequest
+            return new DomainCreateReservationRequest
             {
-                PropertyId = dto.PropertyId,
-                RoomTypeId = dto.RoomTypeId,
-                ArrivalDate = dto.ArrivalDate,
-                ArrivalTime = dto.ArrivalTime!.Value,
-                DepartureDate = dto.DepartureDate,
-                DepartureTime = dto.DepartureTime!.Value,
-                GuestName = dto.GuestName,
-                GuestPhoneNumber = dto.GuestPhoneNumber,
-                GuestCount = dto.GuestCount
+                PropertyId = request.PropertyId,
+                RoomTypeId = request.RoomTypeId,
+                ArrivalDate = request.ArrivalDate,
+                ArrivalTime = request.ArrivalTime!.Value,
+                DepartureDate = request.DepartureDate,
+                DepartureTime = request.DepartureTime!.Value,
+                GuestName = request.GuestName,
+                GuestPhoneNumber = request.GuestPhoneNumber,
+                GuestCount = request.GuestCount
             };
         }
 
-        public static ReservationDto ToDto( this Reservation reservation )
+        public static ReservationResponse ToResponse( this Reservation reservation )
         {
             if ( reservation == null ) return null!;
 
-            return new ReservationDto
+            return new ReservationResponse
             {
                 Id = reservation.Id,
                 PropertyId = reservation.PropertyId,
@@ -46,19 +51,20 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static ReservationFilter ToFilter( this ReservationFilterDto dto )
-        {
-            if ( dto == null ) return new ReservationFilter { IncludeCanceled = false };
+        public static DomainReservationFilter ToDomainFilter( this ApiReservationFilterRequest request )
 
-            return new ReservationFilter
+        {
+            if ( request == null ) return new DomainReservationFilter { IncludeCanceled = false };
+
+            return new DomainReservationFilter
             {
-                PropertyId = dto.PropertyId,
-                RoomTypeId = dto.RoomTypeId,
-                ArrivalDateFrom = dto.ArrivalDateFrom,
-                ArrivalDateTo = dto.ArrivalDateTo,
-                GuestName = dto.GuestName,
-                GuestPhoneNumber = dto.GuestPhoneNumber,
-                IncludeCanceled = dto.IncludeCanceled
+                PropertyId = request.PropertyId,
+                RoomTypeId = request.RoomTypeId,
+                ArrivalDateFrom = request.ArrivalDateFrom,
+                ArrivalDateTo = request.ArrivalDateTo,
+                GuestName = request.GuestName,
+                GuestPhoneNumber = request.GuestPhoneNumber,
+                IncludeCanceled = request.IncludeCanceled
             };
         }
     }

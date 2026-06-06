@@ -18,7 +18,7 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         /// <summary>
         /// Создает новое бронирование.
         /// </summary>
-        /// <param name="dto">Данные создаваемого бронирования.</param>
+        /// <param name="request">Данные создаваемого бронирования.</param>
         /// <returns>Созданное бронирование с рассчитанной итоговой стоимостью.</returns>
         /// <response code="201">Бронирование успешно создано.</response>
         /// <response code="400">Переданы некорректные данные или категория номера не принадлежит указанному объекту размещения.</response>
@@ -26,39 +26,39 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         /// <response code="409">На выбранный период нет свободных номеров указанной категории.</response>
         [HttpPost]
         [Consumes( "application/json" )]
-        [ProducesResponseType( typeof( ReservationDto ), StatusCodes.Status201Created )]
+        [ProducesResponseType( typeof( ReservationResponse ), StatusCodes.Status201Created )]
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         [ProducesResponseType( StatusCodes.Status409Conflict )]
-        public ActionResult<ReservationDto> Create( [FromBody] CreateReservationDto dto )
+        public ActionResult<ReservationResponse> Create( [FromBody] CreateReservationRequest request )
         {
-            var request = dto.ToRequest();
+            var domainRequest = request.ToDomainRequest();
 
-            var createdReservation = _reservationService.Create( request );
+            var createdReservation = _reservationService.Create( domainRequest );
 
             return CreatedAtAction(
                 nameof( GetById ),
                 new { id = createdReservation.Id },
-                createdReservation.ToDto() );
+                createdReservation.ToResponse() );
         }
 
         /// <summary>
         /// Возвращает список бронирований с опциональной фильтрацией.
         /// </summary>
-        /// <param name="filterDto">Параметры фильтрации бронирований.</param>
+        /// <param name="request">Параметры фильтрации бронирований.</param>
         /// <returns>Список бронирований, подходящих под фильтр.</returns>
         /// <response code="200">Список бронирований успешно получен.</response>
         /// <response code="400">Переданы некорректные параметры фильтрации.</response>
         [HttpGet]
-        [ProducesResponseType( typeof( IReadOnlyCollection<ReservationDto> ), StatusCodes.Status200OK )]
+        [ProducesResponseType( typeof( IReadOnlyCollection<ReservationResponse> ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
-        public async Task<ActionResult<IReadOnlyCollection<ReservationDto>>> GetReservations( [FromQuery] ReservationFilterDto filterDto )
+        public async Task<ActionResult<IReadOnlyCollection<ReservationResponse>>> GetReservations( [FromQuery] ReservationFilterRequest request )
         {
-            var reservationFilter = filterDto.ToFilter();
+            var reservationFilter = request.ToDomainFilter();
 
             var reservations = await _reservationService.GetAllAsync( reservationFilter );
 
-            var response = reservations.Select( r => r.ToDto() ).ToList();
+            var response = reservations.Select( r => r.ToResponse() ).ToList();
             return Ok( response );
         }
 
@@ -70,12 +70,12 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         /// <response code="200">Бронирование найдено.</response>
         /// <response code="404">Бронирование с указанным идентификатором не найдено.</response>
         [HttpGet( "{id:guid}" )]
-        [ProducesResponseType( typeof( ReservationDto ), StatusCodes.Status200OK )]
+        [ProducesResponseType( typeof( ReservationResponse ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public async Task<ActionResult<ReservationDto>> GetById( Guid id )
+        public async Task<ActionResult<ReservationResponse>> GetById( Guid id )
         {
             var reservation = await _reservationService.GetByIdAsync( id );
-            return Ok( reservation.ToDto() );
+            return Ok( reservation.ToResponse() );
         }
 
         /// <summary>

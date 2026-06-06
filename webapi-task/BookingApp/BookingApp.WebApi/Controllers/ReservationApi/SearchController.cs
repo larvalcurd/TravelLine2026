@@ -16,18 +16,18 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         /// <summary>
         /// Возвращает доступные пары объект размещения / категория номера по заданным параметрам поиска.
         /// </summary>
-        /// <param name="query">Параметры поиска доступности.</param>
+        /// <param name="request">Параметры поиска доступности.</param>
         /// <returns>Список доступных вариантов размещения.</returns>
         /// <response code="200">Поиск выполнен успешно. Если вариантов нет, возвращается пустой список.</response>
         /// <response code="400">Переданы некорректные параметры поиска.</response>
         [HttpGet]
-        [ProducesResponseType( typeof( IReadOnlyCollection<SearchAvailabilityResultDto> ), StatusCodes.Status200OK )]
+        [ProducesResponseType( typeof( IReadOnlyCollection<SearchAvailabilityResponse> ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
-        public async Task<ActionResult<IReadOnlyCollection<SearchAvailabilityResultDto>>> Search( [FromQuery] SearchAvailabilityQueryDto query )
+        public async Task<ActionResult<IReadOnlyCollection<SearchAvailabilityResponse>>> Search( [FromQuery] SearchAvailabilityRequest request )
         {
-            var criteria = query.ToCriteria();
+            var criteria = request.ToDomainCriteria();
             var options = await searchService.SearchAsync( criteria );
-            var result = options.Select( x => x.ToDto() ).ToList();
+            var result = options.Select( x => x.ToResponse() ).ToList();
 
             return Ok( result );
         }

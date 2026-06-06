@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BookingApp.WebApi.Validators
 {
-    public class CreatePropertyDtoValidator : AbstractValidator<CreatePropertyDto>
+    public class CreatePropertyRequestValidator : AbstractValidator<CreatePropertyRequest>
     {
-        public CreatePropertyDtoValidator()
+        public CreatePropertyRequestValidator()
         {
             RuleFor( x => x.Name ).NotEmpty().MaximumLength( 200 );
             RuleFor( x => x.Country ).NotEmpty().MaximumLength( 100 );

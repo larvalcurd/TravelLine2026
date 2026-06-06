@@ -1,15 +1,15 @@
 namespace BookingApp.WebApi.DTOs.RoomTypes
 {
     /// <summary>
-    /// Данные для обновления категории номеров.
+    /// Данные для создания категории номеров в объекте размещения.
     /// </summary>
-    public class UpdateRoomTypeDto
+    public class CreateRoomTypeRequest
     {
         /// <summary>
-        /// Новое название категории номера.
+        /// Название категории номера.
         /// </summary>
         /// <example>Standard</example>
-        public string Name { get; set; } = string.Empty;
+        public required string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Цена за одну ночь.
@@ -21,7 +21,7 @@ namespace BookingApp.WebApi.DTOs.RoomTypes
         /// Валюта цены в трехбуквенном формате.
         /// </summary>
         /// <example>RUB</example>
-        public string Currency { get; set; } = string.Empty;
+        public required string Currency { get; set; } = string.Empty;
 
         /// <summary>
         /// Минимальное количество гостей для этой категории номера.

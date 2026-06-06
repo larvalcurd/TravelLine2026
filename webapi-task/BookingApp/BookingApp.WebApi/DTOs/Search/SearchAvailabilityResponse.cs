@@ -3,7 +3,7 @@ namespace BookingApp.WebApi.DTOs.Search
     /// <summary>
     /// Доступный вариант размещения, найденный по параметрам поиска.
     /// </summary>
-    public class SearchAvailabilityResultDto
+    public class SearchAvailabilityResponse
     {
         /// <summary>
         /// Идентификатор объекта размещения.

@@ -1,16 +1,21 @@
 using BookingApp.Domain.Entities;
-using BookingApp.Domain.Models;
 using BookingApp.WebApi.DTOs.RoomTypes;
+
+using ApiCreateRoomRequest = BookingApp.WebApi.DTOs.RoomTypes.CreateRoomTypeRequest;
+using ApiUpdateRoomRequest = BookingApp.WebApi.DTOs.RoomTypes.UpdateRoomTypeRequest;
+
+using DomainCreateRoomTypeReq = BookingApp.Domain.Models.CreateRoomTypeRequest;
+using DomainUpdateRoomTypeReq = BookingApp.Domain.Models.UpdateRoomTypeRequest;
 
 namespace BookingApp.WebApi.Mappings
 {
     public static class RoomTypeMappingExtensions
     {
-        public static RoomTypeDto ToDto( this RoomType rt )
+        public static RoomTypeResponse ToResponse( this RoomType rt )
         {
             if ( rt == null ) return null!;
 
-            return new RoomTypeDto
+            return new RoomTypeResponse
             {
                 Id = rt.Id,
                 PropertyId = rt.PropertyId,
@@ -25,37 +30,38 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static CreateRoomTypeRequest ToCreateRequest( this CreateRoomTypeDto dto )
+        public static DomainCreateRoomTypeReq ToDomainRequest( this ApiCreateRoomRequest request )
         {
-            if ( dto == null ) return null!;
+            if ( request == null ) return null!;
 
-            return new CreateRoomTypeRequest
+            return new DomainCreateRoomTypeReq
             {
-                Name = dto.Name,
-                DailyPrice = dto.DailyPrice,
-                Currency = dto.Currency,
-                MinPersonCount = dto.MinPersonCount,
-                MaxPersonCount = dto.MaxPersonCount,
-                TotalRoomsCount = dto.TotalRoomsCount,
-                Services = dto.Services?.ToList() ?? [],
-                Amenities = dto.Amenities?.ToList() ?? []
+                Name = request.Name,
+                DailyPrice = request.DailyPrice,
+                Currency = request.Currency,
+                MinPersonCount = request.MinPersonCount,
+                MaxPersonCount = request.MaxPersonCount,
+                TotalRoomsCount = request.TotalRoomsCount,
+                Services = request.Services?.ToList() ?? [],
+                Amenities = request.Amenities?.ToList() ?? []
             };
         }
 
-        public static UpdateRoomTypeRequest ToUpdateRequest( this UpdateRoomTypeDto dto )
-        {
-            if ( dto == null ) return null!;
+        public static DomainUpdateRoomTypeReq ToDomainRequest( this ApiUpdateRoomRequest request )
 
-            return new UpdateRoomTypeRequest
+        {
+            if ( request == null ) return null!;
+
+            return new DomainUpdateRoomTypeReq
             {
-                Name = dto.Name,
-                DailyPrice = dto.DailyPrice,
-                Currency = dto.Currency,
-                MinPersonCount = dto.MinPersonCount,
-                MaxPersonCount = dto.MaxPersonCount,
-                TotalRoomsCount = dto.TotalRoomsCount,
-                Services = dto.Services?.ToList() ?? [],
-                Amenities = dto.Amenities?.ToList() ?? []
+                Name = request.Name,
+                DailyPrice = request.DailyPrice,
+                Currency = request.Currency,
+                MinPersonCount = request.MinPersonCount,
+                MaxPersonCount = request.MaxPersonCount,
+                TotalRoomsCount = request.TotalRoomsCount,
+                Services = request.Services?.ToList() ?? [],
+                Amenities = request.Amenities?.ToList() ?? []
             };
         }
     }
