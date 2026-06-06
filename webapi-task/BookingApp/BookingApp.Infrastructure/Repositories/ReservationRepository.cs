@@ -10,47 +10,47 @@ namespace BookingApp.Infrastructure.Repositories
     {
         private DbSet<Reservation> Reservations => context.Reservations;
 
-        public IReadOnlyCollection<Reservation> GetAll()
+        public async Task<IReadOnlyCollection<Reservation>> GetAllAsync()
         {
-            return Reservations
+            return await Reservations
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
         }
 
-        public Reservation? GetById( Guid id )
+        public async Task<Reservation?> GetByIdAsync( Guid id )
         {
-            return Reservations.FirstOrDefault( r => r.Id == id );
+            return await Reservations.FirstOrDefaultAsync( r => r.Id == id );
         }
 
-        public IReadOnlyCollection<Reservation> GetOverlappingReservations(
+        public async Task<IReadOnlyCollection<Reservation>> GetOverlappingReservationsAsync(
             IEnumerable<Guid> roomTypeIds,
             DateOnly arrival,
             DateOnly departure )
         {
             var idSet = roomTypeIds.ToHashSet();
 
-            return Reservations
+            return await Reservations
                 .AsNoTracking()
                 .Where( r => !r.IsCanceled )
                 .Where( r => idSet.Contains( r.RoomTypeId ) )
                 .Where( r => arrival < r.DepartureDate && departure > r.ArrivalDate )
-                .ToList();
+                .ToListAsync();
         }
 
-        public int GetOverlappingCount(
+        public async Task<int> GetOverlappingCountAsync(
             Guid roomTypeId,
             DateOnly arrival,
             DateOnly departure )
         {
-            return Reservations
-                .Count( r =>
+            return await Reservations
+                .CountAsync( r =>
                         !r.IsCanceled &&
                         r.RoomTypeId == roomTypeId &&
                         arrival < r.DepartureDate &&
                         departure > r.ArrivalDate );
         }
 
-        public IReadOnlyCollection<Reservation> GetByFilter( ReservationFilter filter )
+        public async Task<IReadOnlyCollection<Reservation>> GetByFilterAsync( ReservationFilter filter )
         {
             IQueryable<Reservation> query = Reservations.AsNoTracking();
 
@@ -91,10 +91,25 @@ namespace BookingApp.Infrastructure.Repositories
                     r.GuestPhoneNumber.Contains( filter.GuestPhoneNumber ) );
             }
 
-            return query
+            return await query
                 .OrderBy( r => r.ArrivalDate )
                 .ThenBy( r => r.ArrivalTime )
-                .ToList();
+                .ToListAsync();
+        }
+
+        public async Task<bool> HasReservationsForPropertyAsync( Guid propertyId )
+        {
+            return await Reservations.AnyAsync( r => r.PropertyId == propertyId && !r.IsCanceled );
+        }
+
+        public async Task<bool> HasReservationsForRoomTypeAsync( Guid id )
+        {
+            return await Reservations.AnyAsync( r => r.RoomTypeId == id && !r.IsCanceled );
+        }
+
+        public Reservation? GetById( Guid id )
+        {
+            return Reservations.FirstOrDefault( r => r.Id == id );
         }
 
         public bool HasReservationsForProperty( Guid propertyId )
@@ -105,6 +120,19 @@ namespace BookingApp.Infrastructure.Repositories
         public bool HasReservationsForRoomType( Guid id )
         {
             return Reservations.Any( r => r.RoomTypeId == id && !r.IsCanceled );
+        }
+
+        public int GetOverlappingCount(
+            Guid roomTypeId,
+            DateOnly arrival,
+            DateOnly departure )
+        {
+            return Reservations
+                .Count( r =>
+                    !r.IsCanceled &&
+                    r.RoomTypeId == roomTypeId &&
+                    arrival < r.DepartureDate &&
+                    departure > r.ArrivalDate );
         }
 
         public void Add( Reservation reservation )

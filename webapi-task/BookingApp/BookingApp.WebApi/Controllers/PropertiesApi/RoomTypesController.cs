@@ -24,9 +24,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [HttpGet( "api/properties/{propertyId:guid}/roomtypes" )]
         [ProducesResponseType( typeof( IReadOnlyCollection<RoomTypeDto> ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public ActionResult<IReadOnlyCollection<RoomTypeDto>> GetByPropertyId( Guid propertyId )
+        public async Task<ActionResult<IReadOnlyCollection<RoomTypeDto>>> GetByPropertyId( Guid propertyId )
         {
-            var roomTypes = _roomTypeService.GetByPropertyId( propertyId );
+            var roomTypes = await _roomTypeService.GetByPropertyIdAsync( propertyId );
             var response = roomTypes.Select( rt => rt.ToDto() ).ToList();
             return Ok( response );
         }
@@ -63,9 +63,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [HttpGet( "api/roomtypes/{id:guid}" )]
         [ProducesResponseType( typeof( RoomTypeDto ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public ActionResult<RoomTypeDto> GetById( Guid id )
+        public async Task<ActionResult<RoomTypeDto>> GetById( Guid id )
         {
-            var roomType = _roomTypeService.GetById( id );
+            var roomType = await _roomTypeService.GetByIdAsync( id );
             return Ok( roomType.ToDto() );
         }
 

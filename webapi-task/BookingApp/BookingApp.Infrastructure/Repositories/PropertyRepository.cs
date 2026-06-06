@@ -8,11 +8,25 @@ namespace BookingApp.Infrastructure.Repositories
     public class PropertyRepository( BookingDbContext context ) : IPropertyRepository
     {
         private DbSet<Property> Properties => context.Properties;
-        public IReadOnlyCollection<Property> GetAll()
+        public async Task<IReadOnlyCollection<Property>> GetAllAsync()
         {
-            return Properties.AsNoTracking()
+            return await Properties.AsNoTracking()
                 .Include( p => p.RoomTypes )
-                .ToList();
+                .ToListAsync();
+        }
+
+        public async Task<Property?> GetByIdAsync( Guid id )
+        {
+            return await Properties
+                .Include( p => p.RoomTypes )
+                .FirstOrDefaultAsync( p => p.Id == id );
+        }
+
+        public async Task<IReadOnlyCollection<Property>> GetByCityAsync( string city )
+        {
+            return await Properties.AsNoTracking()
+                .Where( p => p.City.ToLower() == city.ToLower() )
+                .ToListAsync();
         }
 
         public Property? GetById( Guid id )
@@ -20,13 +34,6 @@ namespace BookingApp.Infrastructure.Repositories
             return Properties
                 .Include( p => p.RoomTypes )
                 .FirstOrDefault( p => p.Id == id );
-        }
-
-        public IReadOnlyCollection<Property> GetByCity( string city )
-        {
-            return Properties.AsNoTracking()
-                .Where( p => p.City.ToLower() == city.ToLower() )
-                .ToList();
         }
 
         public void Add( Property property )

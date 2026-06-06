@@ -52,11 +52,11 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         [HttpGet]
         [ProducesResponseType( typeof( IReadOnlyCollection<ReservationDto> ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
-        public ActionResult<IReadOnlyCollection<ReservationDto>> GetReservations( [FromQuery] ReservationFilterDto filterDto )
+        public async Task<ActionResult<IReadOnlyCollection<ReservationDto>>> GetReservations( [FromQuery] ReservationFilterDto filterDto )
         {
             var reservationFilter = filterDto.ToFilter();
 
-            var reservations = _reservationService.GetAll( reservationFilter );
+            var reservations = await _reservationService.GetAllAsync( reservationFilter );
 
             var response = reservations.Select( r => r.ToDto() ).ToList();
             return Ok( response );
@@ -72,9 +72,9 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         [HttpGet( "{id:guid}" )]
         [ProducesResponseType( typeof( ReservationDto ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public ActionResult<ReservationDto> GetById( Guid id )
+        public async Task<ActionResult<ReservationDto>> GetById( Guid id )
         {
-            var reservation = _reservationService.GetById( id );
+            var reservation = await _reservationService.GetByIdAsync( id );
             return Ok( reservation.ToDto() );
         }
 

@@ -15,15 +15,16 @@ namespace BookingApp.Domain.Services
         private readonly IRoomTypeRepository _roomTypeRepository = roomTypeRepository;
         private readonly IReservationRepository _reservationRepository = reservationRepository;
 
-        public IReadOnlyCollection<RoomType> GetByPropertyId( Guid propertyId )
+        public async Task<IReadOnlyCollection<RoomType>> GetByPropertyIdAsync( Guid propertyId )
         {
-            EnsurePropertyExists( propertyId );
-            return _roomTypeRepository.GetByPropertyId( propertyId );
+            await EnsurePropertyExistsAsync( propertyId );
+            return await _roomTypeRepository.GetByPropertyIdAsync( propertyId );
         }
 
-        public RoomType GetById( Guid id )
+        public async Task<RoomType> GetByIdAsync( Guid id )
         {
-            return _roomTypeRepository.GetById( id ) ?? throw new NotFoundException( $"Room type with id '{id}' was not found." );
+            return await _roomTypeRepository.GetByIdAsync( id )
+                ?? throw new NotFoundException( $"Room type with id '{id}' was not found." );
         }
 
         public RoomType Create( Guid propertyId, CreateRoomTypeRequest request )
@@ -87,6 +88,14 @@ namespace BookingApp.Domain.Services
         private void EnsurePropertyExists( Guid propertyId )
         {
             if ( _propertyRepository.GetById( propertyId ) == null )
+            {
+                throw new NotFoundException( $"Property with id '{propertyId}' was not found." );
+            }
+        }
+
+        private async Task EnsurePropertyExistsAsync( Guid propertyId )
+        {
+            if ( await _propertyRepository.GetByIdAsync( propertyId ) == null )
             {
                 throw new NotFoundException( $"Property with id '{propertyId}' was not found." );
             }

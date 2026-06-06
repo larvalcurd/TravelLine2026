@@ -5,10 +5,11 @@ namespace BookingApp.Domain.Interfaces.Services
 {
     public interface IPropertyService
     {
-        IReadOnlyCollection<Property> GetAll();
-        Property GetById( Guid id );
+        Task<IReadOnlyCollection<Property>> GetAllAsync();
+        Task<Property> GetByIdAsync( Guid id );
+
         Property Create( CreatePropertyRequest request );
         Property Update( Guid id, UpdatePropertyRequest request );
-        void Delete( Guid Id );
+        void Delete( Guid id );
     }
 }

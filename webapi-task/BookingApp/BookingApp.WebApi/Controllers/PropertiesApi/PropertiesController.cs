@@ -22,9 +22,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         /// <response code="200">Список объектов размещения успешно получен.</response>
         [HttpGet]
         [ProducesResponseType( typeof( IReadOnlyCollection<PropertyDto> ), StatusCodes.Status200OK )]
-        public ActionResult<IReadOnlyCollection<PropertyDto>> GetAll()
+        public async Task<ActionResult<IReadOnlyCollection<PropertyDto>>> GetAll()
         {
-            var properties = _propertyService.GetAll();
+            var properties = await _propertyService.GetAllAsync();
             var response = properties.Select( p => p.ToDto() ).ToList();
             return Ok( response );
         }
@@ -39,9 +39,9 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [HttpGet( "{id:guid}" )]
         [ProducesResponseType( typeof( PropertyDto ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status404NotFound )]
-        public ActionResult<PropertyDto> GetById( Guid id )
+        public async Task<ActionResult<PropertyDto>> GetById( Guid id )
         {
-            var property = _propertyService.GetById( id );
+            var property = await _propertyService.GetByIdAsync( id );
             return Ok( property.ToDto() );
         }
 

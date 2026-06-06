@@ -23,10 +23,11 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         [HttpGet]
         [ProducesResponseType( typeof( IReadOnlyCollection<SearchAvailabilityResultDto> ), StatusCodes.Status200OK )]
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
-        public ActionResult<IReadOnlyCollection<SearchAvailabilityResultDto>> Search( [FromQuery] SearchAvailabilityQueryDto query )
+        public async Task<ActionResult<IReadOnlyCollection<SearchAvailabilityResultDto>>> Search( [FromQuery] SearchAvailabilityQueryDto query )
         {
             var criteria = query.ToCriteria();
-            var result = searchService.Search( criteria ).Select( x => x.ToDto() ).ToList();
+            var options = await searchService.SearchAsync( criteria );
+            var result = options.Select( x => x.ToDto() ).ToList();
 
             return Ok( result );
         }

@@ -9,28 +9,28 @@ namespace BookingApp.Infrastructure.Repositories
     {
         private DbSet<RoomType> RoomTypes => context.RoomTypes;
 
-        public IReadOnlyCollection<RoomType> GetAll()
+        public async Task<IReadOnlyCollection<RoomType>> GetAllAsync()
         {
-            return RoomTypes.AsNoTracking().ToList();
+            return await RoomTypes.AsNoTracking().ToListAsync();
         }
 
-        public IReadOnlyCollection<RoomType> GetByPropertyId( Guid propertyId )
+        public async Task<IReadOnlyCollection<RoomType>> GetByPropertyIdAsync( Guid propertyId )
         {
-            return RoomTypes.AsNoTracking()
+            return await RoomTypes.AsNoTracking()
                 .Where( rt => rt.PropertyId == propertyId )
-                .ToList();
+                .ToListAsync();
         }
 
-        public IReadOnlyCollection<RoomType> GetByPropertyIds( IEnumerable<Guid> propertyIds )
+        public async Task<IReadOnlyCollection<RoomType>> GetByPropertyIdsAsync( IEnumerable<Guid> propertyIds )
         {
             var idSet = propertyIds.ToHashSet();
 
-            return RoomTypes.AsNoTracking()
+            return await RoomTypes.AsNoTracking()
                 .Where( rt => idSet.Contains( rt.PropertyId ) )
-                .ToList();
+                .ToListAsync();
         }
 
-        public IReadOnlyCollection<RoomType> GetCandidates(
+        public async Task<IReadOnlyCollection<RoomType>> GetCandidatesAsync(
             IEnumerable<Guid> propertyIds,
             int guests,
             decimal? maxPrice )
@@ -47,12 +47,17 @@ namespace BookingApp.Infrastructure.Repositories
                 query = query.Where( rt => rt.DailyPrice <= maxPrice.Value );
             }
 
-            return query.ToList();
+            return await query.ToListAsync();
         }
 
-        public bool HasRoomTypesForProperty( Guid propertyId )
+        public async Task<bool> HasRoomTypesForPropertyAsync( Guid propertyId )
         {
-            return RoomTypes.Any( rt => rt.PropertyId == propertyId );
+            return await RoomTypes.AnyAsync( rt => rt.PropertyId == propertyId );
+        }
+
+        public async Task<RoomType?> GetByIdAsync( Guid id )
+        {
+            return await RoomTypes.FirstOrDefaultAsync( rt => rt.Id == id );
         }
 
         public RoomType? GetById( Guid id )

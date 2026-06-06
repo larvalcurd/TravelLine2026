@@ -11,14 +11,14 @@ namespace BookingApp.Domain.Services
         private readonly IPropertyRepository _propertyRepository = propertyRepository;
         private readonly IReservationRepository _reservationRepository = reservationRepository;
 
-        public IReadOnlyCollection<Property> GetAll()
+        public async Task<IReadOnlyCollection<Property>> GetAllAsync()
         {
-            return _propertyRepository.GetAll();
+            return await _propertyRepository.GetAllAsync();
         }
 
-        public Property GetById( Guid id )
+        public async Task<Property> GetByIdAsync( Guid id )
         {
-            return _propertyRepository.GetById( id )
+            return await _propertyRepository.GetByIdAsync( id )
                 ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
         }
 

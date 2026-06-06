@@ -6,8 +6,9 @@ namespace BookingApp.Domain.Interfaces.Services
     public interface IReservationService
     {
         Reservation Create( CreateReservationRequest request );
-        IReadOnlyCollection<Reservation> GetAll( ReservationFilter? filter );
-        Reservation GetById( Guid id );
         void Cancel( Guid id );
+
+        Task<IReadOnlyCollection<Reservation>> GetAllAsync( ReservationFilter? filter );
+        Task<Reservation> GetByIdAsync( Guid id );
     }
 }

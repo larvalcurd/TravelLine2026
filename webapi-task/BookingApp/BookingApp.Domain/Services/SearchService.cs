@@ -14,21 +14,23 @@ public class SearchService(
     private readonly IRoomTypeRepository _roomTypeRepository = roomTypeRepository;
     private readonly IReservationRepository _reservationRepository = reservationRepository;
 
-    public IReadOnlyCollection<AvailableRoomOption> Search( SearchAvailabilityCriteria criteria )
+    public async Task<IReadOnlyCollection<AvailableRoomOption>> SearchAsync( SearchAvailabilityCriteria criteria )
     {
         if ( !IsValidCriteria( criteria ) )
         {
             return [];
         }
 
-        var propertiesInCity = _propertyRepository.GetByCity( criteria.City ).ToDictionary( p => p.Id, p => p );
+        var propertiesInCity = ( await _propertyRepository.GetByCityAsync( criteria.City ) )
+            .ToDictionary( p => p.Id, p => p );
+
         if ( propertiesInCity.Count == 0 )
         {
             return [];
         }
 
-        var candidateRoomTypes = _roomTypeRepository
-            .GetCandidates( propertiesInCity.Keys, criteria.Guests, criteria.MaxPrice )
+        var candidateRoomTypes = ( await _roomTypeRepository
+            .GetCandidatesAsync( propertiesInCity.Keys, criteria.Guests, criteria.MaxPrice ) )
             .ToList();
 
         if ( candidateRoomTypes.Count == 0 )
@@ -36,7 +38,10 @@ public class SearchService(
             return [];
         }
 
-        var overlappingCounts = GetOverlappingCounts( candidateRoomTypes.Select( rt => rt.Id ), criteria );
+        var overlappingCounts = await GetOverlappingCountsAsync(
+            candidateRoomTypes.Select( rt => rt.Id ),
+            criteria );
+
         int nights = criteria.DepartureDate.DayNumber - criteria.ArrivalDate.DayNumber;
 
         return BuildAvailableOptions( candidateRoomTypes, propertiesInCity, overlappingCounts, nights );
@@ -50,10 +55,14 @@ public class SearchService(
             && criteria.ArrivalDate < criteria.DepartureDate;
     }
 
-    private Dictionary<Guid, int> GetOverlappingCounts( IEnumerable<Guid> roomTypeIds, SearchAvailabilityCriteria criteria )
+    private async Task<Dictionary<Guid, int>> GetOverlappingCountsAsync(
+        IEnumerable<Guid> roomTypeIds,
+        SearchAvailabilityCriteria criteria )
     {
-        return _reservationRepository
-            .GetOverlappingReservations( roomTypeIds, criteria.ArrivalDate, criteria.DepartureDate )
+        var reservations = await _reservationRepository
+            .GetOverlappingReservationsAsync( roomTypeIds, criteria.ArrivalDate, criteria.DepartureDate );
+
+        return reservations
             .GroupBy( r => r.RoomTypeId )
             .ToDictionary( g => g.Key, g => g.Count() );
     }
@@ -85,7 +94,11 @@ public class SearchService(
             .ToList();
     }
 
-    private static AvailableRoomOption MapToOption( Property property, RoomType roomType, int availableCount, int nights )
+    private static AvailableRoomOption MapToOption(
+        Property property,
+        RoomType roomType,
+        int availableCount,
+        int nights )
     {
         return new AvailableRoomOption
         {

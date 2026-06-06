@@ -4,6 +4,6 @@ namespace BookingApp.Domain.Interfaces.Services
 {
     public interface ISearchService
     {
-        IReadOnlyCollection<AvailableRoomOption> Search( SearchAvailabilityCriteria criteria );
+        Task<IReadOnlyCollection<AvailableRoomOption>> SearchAsync( SearchAvailabilityCriteria criteria );
     }
 }

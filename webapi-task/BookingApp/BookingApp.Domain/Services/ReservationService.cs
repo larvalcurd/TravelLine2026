@@ -68,14 +68,14 @@ public class ReservationService(
         return reservation;
     }
 
-    public IReadOnlyCollection<Reservation> GetAll( ReservationFilter? filter )
+    public async Task<IReadOnlyCollection<Reservation>> GetAllAsync( ReservationFilter? filter )
     {
-        return _reservationRepository.GetByFilter( filter ?? new ReservationFilter() );
+        return await _reservationRepository.GetByFilterAsync( filter ?? new ReservationFilter() );
     }
 
-    public Reservation GetById( Guid id )
+    public async Task<Reservation> GetByIdAsync( Guid id )
     {
-        return _reservationRepository.GetById( id )
+        return await _reservationRepository.GetByIdAsync( id )
             ?? throw new NotFoundException( $"Reservation with id '{id}' was not found." );
     }
 
