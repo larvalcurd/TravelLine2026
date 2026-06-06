@@ -1,6 +1,6 @@
 using BookingApp.Domain.Entities;
 
-namespace BookingApp.Infrastructure.Persistence.Seed
+namespace BookingApp.Infrastructure.Foundation.Seed
 {
     public static class BookingDbSeeder
     {

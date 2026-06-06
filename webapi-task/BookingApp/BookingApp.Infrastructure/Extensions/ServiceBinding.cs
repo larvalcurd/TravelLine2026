@@ -1,5 +1,5 @@
 using BookingApp.Domain.Interfaces.Repositories;
-using BookingApp.Infrastructure.Persistence;
+using BookingApp.Infrastructure.Foundation;
 using BookingApp.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BookingApp.Infrastructure.Extensions
 {
-    public static class DependencyInjection
+    public static class ServiceBinding
     {
         public static IServiceCollection AddInfrastructure( this IServiceCollection services, IConfiguration configuration )
         {

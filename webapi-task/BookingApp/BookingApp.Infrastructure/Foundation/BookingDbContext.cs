@@ -1,7 +1,7 @@
 using BookingApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingApp.Infrastructure.Persistence
+namespace BookingApp.Infrastructure.Foundation
 {
     public class BookingDbContext( DbContextOptions<BookingDbContext> options ) : DbContext( options )
     {

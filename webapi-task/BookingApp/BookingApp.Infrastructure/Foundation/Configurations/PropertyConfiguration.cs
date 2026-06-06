@@ -2,7 +2,7 @@ using BookingApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BookingApp.Infrastructure.Persistence.Configurations
+namespace BookingApp.Infrastructure.Foundation.Configurations
 {
     public class PropertyConfiguration : IEntityTypeConfiguration<Property>
     {
