@@ -7,8 +7,6 @@ namespace BookingApp.WebApi.Mappings
     {
         public static SearchAvailabilityCriteria ToDomainCriteria( this SearchAvailabilityRequest request )
         {
-            if ( request == null ) return null!;
-
             return new SearchAvailabilityCriteria
             {
                 City = request.City,
@@ -19,10 +17,9 @@ namespace BookingApp.WebApi.Mappings
             };
 
         }
+
         public static SearchAvailabilityResponse ToResponse( this AvailableRoomOption option )
         {
-            if ( option == null ) return null!;
-
             return new SearchAvailabilityResponse
             {
                 PropertyId = option.PropertyId,
@@ -43,7 +40,6 @@ namespace BookingApp.WebApi.Mappings
                 AvailableRoomsCount = option.AvailableRoomsCount,
                 Nights = option.Nights,
                 TotalPrice = option.TotalPrice,
-
 
                 Services = option.Services?.ToList() ?? [],
                 Amenities = option.Amenities?.ToList() ?? []

@@ -13,8 +13,6 @@ namespace BookingApp.WebApi.Mappings
     {
         public static DomainCreateReservationRequest ToDomainRequest( this ApiCreateReservationRequest request )
         {
-            if ( request == null ) return null!;
-
             return new DomainCreateReservationRequest
             {
                 PropertyId = request.PropertyId,
@@ -31,8 +29,6 @@ namespace BookingApp.WebApi.Mappings
 
         public static ReservationResponse ToResponse( this Reservation reservation )
         {
-            if ( reservation == null ) return null!;
-
             return new ReservationResponse
             {
                 Id = reservation.Id,
@@ -54,8 +50,6 @@ namespace BookingApp.WebApi.Mappings
         public static DomainReservationFilter ToDomainFilter( this ApiReservationFilterRequest request )
 
         {
-            if ( request == null ) return new DomainReservationFilter { IncludeCanceled = false };
-
             return new DomainReservationFilter
             {
                 PropertyId = request.PropertyId,

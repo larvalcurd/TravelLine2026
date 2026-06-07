@@ -11,8 +11,6 @@ namespace BookingApp.WebApi.Mappings
     {
         public static PropertyResponse ToResponse( this Property property )
         {
-            if ( property == null ) return null!;
-
             return new PropertyResponse
             {
                 Id = property.Id,

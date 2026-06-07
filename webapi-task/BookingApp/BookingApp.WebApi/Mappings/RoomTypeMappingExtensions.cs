@@ -4,8 +4,8 @@ using BookingApp.WebApi.DTOs.RoomTypes;
 using ApiCreateRoomRequest = BookingApp.WebApi.DTOs.RoomTypes.CreateRoomTypeRequest;
 using ApiUpdateRoomRequest = BookingApp.WebApi.DTOs.RoomTypes.UpdateRoomTypeRequest;
 
-using DomainCreateRoomTypeReq = BookingApp.Domain.Models.CreateRoomTypeRequest;
-using DomainUpdateRoomTypeReq = BookingApp.Domain.Models.UpdateRoomTypeRequest;
+using DomainCreateRoomTypeRequest = BookingApp.Domain.Models.CreateRoomTypeRequest;
+using DomainUpdateRoomTypeRequest = BookingApp.Domain.Models.UpdateRoomTypeRequest;
 
 namespace BookingApp.WebApi.Mappings
 {
@@ -13,8 +13,6 @@ namespace BookingApp.WebApi.Mappings
     {
         public static RoomTypeResponse ToResponse( this RoomType rt )
         {
-            if ( rt == null ) return null!;
-
             return new RoomTypeResponse
             {
                 Id = rt.Id,
@@ -30,11 +28,9 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static DomainCreateRoomTypeReq ToDomainRequest( this ApiCreateRoomRequest request )
+        public static DomainCreateRoomTypeRequest ToDomainRequest( this ApiCreateRoomRequest request )
         {
-            if ( request == null ) return null!;
-
-            return new DomainCreateRoomTypeReq
+            return new DomainCreateRoomTypeRequest
             {
                 Name = request.Name,
                 DailyPrice = request.DailyPrice,
@@ -47,12 +43,10 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static DomainUpdateRoomTypeReq ToDomainRequest( this ApiUpdateRoomRequest request )
+        public static DomainUpdateRoomTypeRequest ToDomainRequest( this ApiUpdateRoomRequest request )
 
         {
-            if ( request == null ) return null!;
-
-            return new DomainUpdateRoomTypeReq
+            return new DomainUpdateRoomTypeRequest
             {
                 Name = request.Name,
                 DailyPrice = request.DailyPrice,
