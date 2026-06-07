@@ -1,3 +1,4 @@
+using BookingApp.Domain.Extensions;
 using BookingApp.Infrastructure.Extensions;
 using BookingApp.WebApi.Extensions;
 using BookingApp.WebApi.Middleware;

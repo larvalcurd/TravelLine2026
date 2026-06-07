@@ -27,15 +27,5 @@ namespace BookingApp.WebApi.Extensions
 
             return services;
         }
-
-        public static IServiceCollection AddDomainServices( this IServiceCollection services )
-        {
-            services.AddScoped<IPropertyService, PropertyService>();
-            services.AddScoped<IRoomTypeService, RoomTypeService>();
-            services.AddScoped<ISearchService, SearchService>();
-            services.AddScoped<IReservationService, ReservationService>();
-
-            return services;
-        }
     }
 }
