@@ -1,11 +1,13 @@
 using System.Reflection;
+using BookingApp.Domain.Interfaces.Services;
+using BookingApp.Domain.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 
 namespace BookingApp.WebApi.Extensions
 {
-    public static class WebApiExtensions
+    public static class ServiceBinding
     {
         public static IServiceCollection AddWebApiServices( this IServiceCollection services )
         {
@@ -22,6 +24,16 @@ namespace BookingApp.WebApi.Extensions
                 options.IncludeXmlComments( xmlFilePath );
             } );
             services.AddFluentValidationRulesToSwagger();
+
+            return services;
+        }
+
+        public static IServiceCollection AddDomainServices( this IServiceCollection services )
+        {
+            services.AddScoped<IPropertyService, PropertyService>();
+            services.AddScoped<IRoomTypeService, RoomTypeService>();
+            services.AddScoped<ISearchService, SearchService>();
+            services.AddScoped<IReservationService, ReservationService>();
 
             return services;
         }
