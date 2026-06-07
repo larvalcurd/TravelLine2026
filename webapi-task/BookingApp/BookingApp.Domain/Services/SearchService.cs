@@ -21,7 +21,7 @@ public class SearchService(
             return [];
         }
 
-        var propertiesInCity = ( await _propertyRepository.GetByCityAsync( criteria.City ) )
+        Dictionary<Guid, Property> propertiesInCity = ( await _propertyRepository.GetByCityAsync( criteria.City ) )
             .ToDictionary( p => p.Id, p => p );
 
         if ( propertiesInCity.Count == 0 )
@@ -29,7 +29,7 @@ public class SearchService(
             return [];
         }
 
-        var candidateRoomTypes = ( await _roomTypeRepository
+        List<RoomType> candidateRoomTypes = ( await _roomTypeRepository
             .GetCandidatesAsync( propertiesInCity.Keys, criteria.Guests, criteria.MaxPrice ) )
             .ToList();
 
@@ -38,7 +38,7 @@ public class SearchService(
             return [];
         }
 
-        var overlappingCounts = await GetOverlappingCountsAsync(
+        Dictionary<Guid, int> overlappingCounts = await GetOverlappingCountsAsync(
             candidateRoomTypes.Select( rt => rt.Id ),
             criteria );
 
@@ -59,7 +59,7 @@ public class SearchService(
         IEnumerable<Guid> roomTypeIds,
         SearchAvailabilityCriteria criteria )
     {
-        var reservations = await _reservationRepository
+        IReadOnlyCollection<Reservation> reservations = await _reservationRepository
             .GetOverlappingReservationsAsync( roomTypeIds, criteria.ArrivalDate, criteria.DepartureDate );
 
         return reservations
@@ -73,16 +73,16 @@ public class SearchService(
         Dictionary<Guid, int> overlappingCounts,
         int nights )
     {
-        var result = new List<AvailableRoomOption>();
+        List<AvailableRoomOption> result = [];
 
-        foreach ( var roomType in candidateRoomTypes )
+        foreach ( RoomType roomType in candidateRoomTypes )
         {
-            var bookedCount = overlappingCounts.GetValueOrDefault( roomType.Id, 0 );
-            var availableCount = roomType.TotalRoomsCount - bookedCount;
+            int bookedCount = overlappingCounts.GetValueOrDefault( roomType.Id, 0 );
+            int availableCount = roomType.TotalRoomsCount - bookedCount;
 
             if ( availableCount > 0 )
             {
-                var property = propertiesInCity[ roomType.PropertyId ];
+                Property property = propertiesInCity[ roomType.PropertyId ];
                 result.Add( MapToOption( property, roomType, availableCount, nights ) );
             }
         }

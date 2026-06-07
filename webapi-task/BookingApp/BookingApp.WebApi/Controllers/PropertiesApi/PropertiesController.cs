@@ -1,7 +1,11 @@
+using BookingApp.Domain.Entities;
 using BookingApp.Domain.Interfaces.Services;
 using BookingApp.WebApi.DTOs.Properties;
 using BookingApp.WebApi.Mappings;
 using Microsoft.AspNetCore.Mvc;
+
+using DomainCreatePropertyRequest = BookingApp.Domain.Models.CreatePropertyRequest;
+using DomainUpdatePropertyRequest = BookingApp.Domain.Models.UpdatePropertyRequest;
 
 namespace BookingApp.WebApi.Controllers.PropertiesApi
 {
@@ -24,8 +28,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( typeof( IReadOnlyCollection<PropertyResponse> ), StatusCodes.Status200OK )]
         public async Task<ActionResult<IReadOnlyCollection<PropertyResponse>>> GetAll()
         {
-            var properties = await _propertyService.GetAllAsync();
-            var response = properties.Select( p => p.ToResponse() ).ToList();
+            IReadOnlyCollection<Property> properties = await _propertyService.GetAllAsync();
+            List<PropertyResponse> response = properties.Select( p => p.ToResponse() ).ToList();
             return Ok( response );
         }
 
@@ -41,7 +45,7 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public async Task<ActionResult<PropertyResponse>> GetById( Guid id )
         {
-            var property = await _propertyService.GetByIdAsync( id );
+            Property property = await _propertyService.GetByIdAsync( id );
             return Ok( property.ToResponse() );
         }
 
@@ -58,9 +62,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
         public ActionResult<PropertyResponse> Create( [FromBody] CreatePropertyRequest request )
         {
-            var domainRequest = request.ToDomainRequest();
-            var created = _propertyService.Create( domainRequest );
-
+            DomainCreatePropertyRequest domainRequest = request.ToDomainRequest();
+            Property created = _propertyService.Create( domainRequest );
             return CreatedAtAction( nameof( GetById ), new { id = created.Id }, created.ToResponse() );
         }
 
@@ -79,7 +82,7 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public IActionResult Update( Guid id, [FromBody] UpdatePropertyRequest request )
         {
-            var domainRequest = request.ToDomainRequest();
+            DomainUpdatePropertyRequest domainRequest = request.ToDomainRequest();
             _propertyService.Update( id, domainRequest );
             return NoContent();
         }

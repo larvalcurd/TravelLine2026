@@ -50,7 +50,7 @@ namespace BookingApp.Infrastructure.Repositories
 
         public void Delete( Guid id )
         {
-            var entity = Properties.Find( id )
+            Property entity = Properties.Find( id )
                 ?? throw new InvalidOperationException( $"Property with id '{id}' was not found." );
 
             Properties.Remove( entity );

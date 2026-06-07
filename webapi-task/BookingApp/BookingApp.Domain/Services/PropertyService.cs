@@ -26,7 +26,7 @@ namespace BookingApp.Domain.Services
         {
             Validate( request );
 
-            var entity = new Property
+            Property entity = new()
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name.Trim(),
@@ -63,7 +63,7 @@ namespace BookingApp.Domain.Services
 
         public void Delete( Guid id )
         {
-            var existing = _propertyRepository.GetById( id )
+            Property? existing = _propertyRepository.GetById( id )
                 ?? throw new NotFoundException( $"Property with id '{id}' was not found." );
 
             if ( _reservationRepository.HasReservationsForProperty( id ) )

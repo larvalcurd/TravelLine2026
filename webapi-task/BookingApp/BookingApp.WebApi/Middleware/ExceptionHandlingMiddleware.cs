@@ -24,7 +24,7 @@ namespace BookingApp.WebApi.Middleware
         {
             context.Response.ContentType = "application/json";
 
-            var statusCode = exception switch
+            int statusCode = exception switch
             {
                 NotFoundException => StatusCodes.Status404NotFound,
                 ValidationException => StatusCodes.Status400BadRequest,

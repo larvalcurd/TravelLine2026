@@ -1,7 +1,11 @@
+using BookingApp.Domain.Entities;
 using BookingApp.Domain.Interfaces.Services;
 using BookingApp.WebApi.DTOs.RoomTypes;
 using BookingApp.WebApi.Mappings;
 using Microsoft.AspNetCore.Mvc;
+
+using DomainCreateRoomTypeRequest = BookingApp.Domain.Models.CreateRoomTypeRequest;
+using DomainUpdateRoomTypeRequest = BookingApp.Domain.Models.UpdateRoomTypeRequest;
 
 namespace BookingApp.WebApi.Controllers.PropertiesApi
 {
@@ -26,8 +30,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public async Task<ActionResult<IReadOnlyCollection<RoomTypeResponse>>> GetByPropertyId( Guid propertyId )
         {
-            var roomTypes = await _roomTypeService.GetByPropertyIdAsync( propertyId );
-            var response = roomTypes.Select( rt => rt.ToResponse() ).ToList();
+            IReadOnlyCollection<RoomType> roomTypes = await _roomTypeService.GetByPropertyIdAsync( propertyId );
+            List<RoomTypeResponse> response = roomTypes.Select( rt => rt.ToResponse() ).ToList();
             return Ok( response );
         }
 
@@ -47,8 +51,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public ActionResult<RoomTypeResponse> Create( Guid propertyId, [FromBody] CreateRoomTypeRequest request )
         {
-            var domainRequest = request.ToDomainRequest();
-            var created = _roomTypeService.Create( propertyId, domainRequest );
+            DomainCreateRoomTypeRequest domainRequest = request.ToDomainRequest();
+            RoomType created = _roomTypeService.Create( propertyId, domainRequest );
 
             return CreatedAtAction( nameof( GetById ), new { id = created.Id }, created.ToResponse() );
         }
@@ -65,7 +69,7 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public async Task<ActionResult<RoomTypeResponse>> GetById( Guid id )
         {
-            var roomType = await _roomTypeService.GetByIdAsync( id );
+            RoomType roomType = await _roomTypeService.GetByIdAsync( id );
             return Ok( roomType.ToResponse() );
         }
 
@@ -84,8 +88,8 @@ namespace BookingApp.WebApi.Controllers.PropertiesApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public IActionResult Update( Guid id, [FromBody] UpdateRoomTypeRequest request )
         {
-            var domainReguest = request.ToDomainRequest();
-            _roomTypeService.Update( id, domainReguest );
+            DomainUpdateRoomTypeRequest domainRequest = request.ToDomainRequest();
+            _roomTypeService.Update( id, domainRequest );
 
             return NoContent();
         }

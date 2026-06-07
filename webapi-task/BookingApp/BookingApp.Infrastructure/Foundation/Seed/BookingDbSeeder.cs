@@ -27,9 +27,9 @@ namespace BookingApp.Infrastructure.Foundation.Seed
 
         public static void Seed( BookingDbContext dbContext )
         {
-            var properties = CreateProperties();
-            var roomTypes = CreateRoomTypes();
-            var reservations = CreateReservations( roomTypes );
+            IReadOnlyCollection<Property> properties = CreateProperties();
+            IReadOnlyCollection<RoomType> roomTypes = CreateRoomTypes();
+            IReadOnlyCollection<Reservation> reservations = CreateReservations( roomTypes );
 
             AddMissingProperties( dbContext, properties );
             AddMissingRoomTypes( dbContext, roomTypes );
@@ -184,11 +184,11 @@ namespace BookingApp.Infrastructure.Foundation.Seed
 
         private static IReadOnlyCollection<Reservation> CreateReservations( IReadOnlyCollection<RoomType> roomTypes )
         {
-            var grandStandard = GetRoomType( roomTypes, GrandStandardId );
-            var grandSuite = GetRoomType( roomTypes, GrandSuiteId );
-            var riversideFamily = GetRoomType( roomTypes, RiversideFamilyId );
-            var nevskyStudio = GetRoomType( roomTypes, NevskyStudioId );
-            var kazanSuite = GetRoomType( roomTypes, KazanSuiteId );
+            RoomType grandStandard = GetRoomType( roomTypes, GrandStandardId );
+            RoomType grandSuite = GetRoomType( roomTypes, GrandSuiteId );
+            RoomType riversideFamily = GetRoomType( roomTypes, RiversideFamilyId );
+            RoomType nevskyStudio = GetRoomType( roomTypes, NevskyStudioId );
+            RoomType kazanSuite = GetRoomType( roomTypes, KazanSuiteId );
 
             return [
                 CreateReservation(
@@ -290,14 +290,14 @@ namespace BookingApp.Infrastructure.Foundation.Seed
 
         private static decimal CalculateTotal( decimal dailyPrice, DateOnly arrivalDate, DateOnly departureDate )
         {
-            var nights = departureDate.DayNumber - arrivalDate.DayNumber;
+            int nights = departureDate.DayNumber - arrivalDate.DayNumber;
             return dailyPrice * nights;
         }
 
         private static void AddMissingProperties( BookingDbContext dbContext, IReadOnlyCollection<Property> properties )
         {
-            var existingIds = dbContext.Set<Property>().Select( property => property.Id ).ToHashSet();
-            var missingProperties = properties.Where( property => !existingIds.Contains( property.Id ) ).ToList();
+            HashSet<Guid> existingIds = dbContext.Set<Property>().Select( property => property.Id ).ToHashSet();
+            List<Property> missingProperties = properties.Where( property => !existingIds.Contains( property.Id ) ).ToList();
 
             if ( missingProperties.Count > 0 )
             {
@@ -307,8 +307,8 @@ namespace BookingApp.Infrastructure.Foundation.Seed
 
         private static void AddMissingRoomTypes( BookingDbContext dbContext, IReadOnlyCollection<RoomType> roomTypes )
         {
-            var existingIds = dbContext.Set<RoomType>().Select( roomType => roomType.Id ).ToHashSet();
-            var missingRoomTypes = roomTypes.Where( roomType => !existingIds.Contains( roomType.Id ) ).ToList();
+            HashSet<Guid> existingIds = dbContext.Set<RoomType>().Select( roomType => roomType.Id ).ToHashSet();
+            List<RoomType> missingRoomTypes = roomTypes.Where( roomType => !existingIds.Contains( roomType.Id ) ).ToList();
 
             if ( missingRoomTypes.Count > 0 )
             {
@@ -318,8 +318,8 @@ namespace BookingApp.Infrastructure.Foundation.Seed
 
         private static void AddMissingReservations( BookingDbContext dbContext, IReadOnlyCollection<Reservation> reservations )
         {
-            var existingIds = dbContext.Set<Reservation>().Select( reservation => reservation.Id ).ToHashSet();
-            var missingReservations = reservations.Where( reservation => !existingIds.Contains( reservation.Id ) ).ToList();
+            HashSet<Guid> existingIds = dbContext.Set<Reservation>().Select( reservation => reservation.Id ).ToHashSet();
+            List<Reservation> missingReservations = reservations.Where( reservation => !existingIds.Contains( reservation.Id ) ).ToList();
 
             if ( missingReservations.Count > 0 )
             {

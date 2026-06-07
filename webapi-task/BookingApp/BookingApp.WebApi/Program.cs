@@ -2,13 +2,13 @@ using BookingApp.Infrastructure.Extensions;
 using BookingApp.WebApi.Extensions;
 using BookingApp.WebApi.Middleware;
 
-var builder = WebApplication.CreateBuilder( args );
+WebApplicationBuilder builder = WebApplication.CreateBuilder( args );
 
 builder.Services.AddWebApiServices();
 builder.Services.AddDomainServices();
 builder.Services.AddInfrastructure( builder.Configuration );
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.InitializeDatabase();
 

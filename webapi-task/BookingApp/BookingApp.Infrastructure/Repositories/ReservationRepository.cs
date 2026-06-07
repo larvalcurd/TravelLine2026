@@ -27,7 +27,7 @@ namespace BookingApp.Infrastructure.Repositories
             DateOnly arrival,
             DateOnly departure )
         {
-            var idSet = roomTypeIds.ToHashSet();
+            HashSet<Guid> idSet = roomTypeIds.ToHashSet();
 
             return await Reservations
                 .AsNoTracking()
@@ -81,7 +81,7 @@ namespace BookingApp.Infrastructure.Repositories
 
             if ( !string.IsNullOrWhiteSpace( filter.GuestName ) )
             {
-                var name = filter.GuestName.ToLower();
+                string name = filter.GuestName.ToLower();
                 query = query.Where( r => r.GuestName.ToLower().Contains( name ) );
             }
 

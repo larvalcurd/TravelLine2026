@@ -19,10 +19,10 @@ public class ReservationService(
     {
         ValidateRequest( request );
 
-        var property = _propertyRepository.GetById( request.PropertyId )
+        Property? property = _propertyRepository.GetById( request.PropertyId )
             ?? throw new NotFoundException( $"Property with id '{request.PropertyId}' was not found." );
 
-        var roomType = _roomTypeRepository.GetById( request.RoomTypeId )
+        RoomType? roomType = _roomTypeRepository.GetById( request.RoomTypeId )
             ?? throw new NotFoundException( $"Room type with id '{request.RoomTypeId}' was not found." );
 
         if ( roomType.PropertyId != request.PropertyId )
@@ -35,7 +35,7 @@ public class ReservationService(
             throw new ValidationException( "Guest count does not fit the selected room type." );
         }
 
-        var overlappingReservations = _reservationRepository.GetOverlappingCount(
+        int overlappingReservations = _reservationRepository.GetOverlappingCount(
             request.RoomTypeId,
             request.ArrivalDate,
             request.DepartureDate );
@@ -45,9 +45,9 @@ public class ReservationService(
             throw new NoAvailabilityException( "No available rooms for the selected period." );
         }
 
-        var nights = request.DepartureDate.DayNumber - request.ArrivalDate.DayNumber;
+        int nights = request.DepartureDate.DayNumber - request.ArrivalDate.DayNumber;
 
-        var reservation = new Reservation
+        Reservation reservation = new()
         {
             Id = Guid.NewGuid(),
             PropertyId = request.PropertyId,
@@ -81,7 +81,7 @@ public class ReservationService(
 
     public void Cancel( Guid id )
     {
-        var reservation = _reservationRepository.GetById( id )
+        Reservation? reservation = _reservationRepository.GetById( id )
             ?? throw new NotFoundException( $"Reservation with id '{id}' was not found." );
 
         if ( reservation.IsCanceled )

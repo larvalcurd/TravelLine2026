@@ -23,7 +23,7 @@ namespace BookingApp.Infrastructure.Repositories
 
         public async Task<IReadOnlyCollection<RoomType>> GetByPropertyIdsAsync( IEnumerable<Guid> propertyIds )
         {
-            var idSet = propertyIds.ToHashSet();
+            HashSet<Guid> idSet = propertyIds.ToHashSet();
 
             return await RoomTypes.AsNoTracking()
                 .Where( rt => idSet.Contains( rt.PropertyId ) )
@@ -35,9 +35,9 @@ namespace BookingApp.Infrastructure.Repositories
             int guests,
             decimal? maxPrice )
         {
-            var idSet = propertyIds.ToHashSet();
+            HashSet<Guid> idSet = propertyIds.ToHashSet();
 
-            var query = RoomTypes
+            IQueryable<RoomType> query = RoomTypes
                 .AsNoTracking()
                 .Where( rt => idSet.Contains( rt.PropertyId ) )
                 .Where( rt => guests >= rt.MinPersonCount && guests <= rt.MaxPersonCount );
@@ -79,7 +79,7 @@ namespace BookingApp.Infrastructure.Repositories
 
         public void Delete( Guid id )
         {
-            var entity = RoomTypes.Find( id )
+            RoomType entity = RoomTypes.Find( id )
                 ?? throw new InvalidOperationException( $"RoomType with id '{id}' was not found." );
 
             RoomTypes.Remove( entity );

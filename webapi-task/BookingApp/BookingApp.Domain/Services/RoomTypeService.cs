@@ -32,7 +32,7 @@ namespace BookingApp.Domain.Services
             EnsurePropertyExists( propertyId );
             Validate( request );
 
-            var entity = new RoomType
+            RoomType entity = new()
             {
                 Id = Guid.NewGuid(),
                 PropertyId = propertyId,
@@ -52,7 +52,7 @@ namespace BookingApp.Domain.Services
 
         public RoomType Update( Guid id, UpdateRoomTypeRequest request )
         {
-            var existing = _roomTypeRepository.GetById( id )
+            RoomType? existing = _roomTypeRepository.GetById( id )
                 ?? throw new NotFoundException( $"Room type with id '{id}' was not found." );
 
             Validate( request );
@@ -73,7 +73,7 @@ namespace BookingApp.Domain.Services
 
         public void Delete( Guid id )
         {
-            var existing = _roomTypeRepository.GetById( id )
+            RoomType? existing = _roomTypeRepository.GetById( id )
                 ?? throw new NotFoundException( $"Room type with id '{id}' was not found." );
 
             if ( _reservationRepository.HasReservationsForRoomType( id ) )

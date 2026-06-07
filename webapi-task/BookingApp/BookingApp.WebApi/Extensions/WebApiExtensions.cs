@@ -17,8 +17,8 @@ namespace BookingApp.WebApi.Extensions
 
             services.AddSwaggerGen( options =>
             {
-                var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlFilePath = Path.Combine( AppContext.BaseDirectory, xmlFileName );
+                string xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                string xmlFilePath = Path.Combine( AppContext.BaseDirectory, xmlFileName );
                 options.IncludeXmlComments( xmlFilePath );
             } );
             services.AddFluentValidationRulesToSwagger();

@@ -1,7 +1,11 @@
+using BookingApp.Domain.Entities;
 using BookingApp.Domain.Interfaces.Services;
 using BookingApp.WebApi.DTOs.Reservations;
 using BookingApp.WebApi.Mappings;
 using Microsoft.AspNetCore.Mvc;
+
+using DomainCreateReservationRequest = BookingApp.Domain.Models.CreateReservationRequest;
+using DomainReservationFilter = BookingApp.Domain.Models.ReservationFilter;
 
 namespace BookingApp.WebApi.Controllers.ReservationApi
 {
@@ -32,9 +36,9 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         [ProducesResponseType( StatusCodes.Status409Conflict )]
         public ActionResult<ReservationResponse> Create( [FromBody] CreateReservationRequest request )
         {
-            var domainRequest = request.ToDomainRequest();
+            DomainCreateReservationRequest domainRequest = request.ToDomainRequest();
 
-            var createdReservation = _reservationService.Create( domainRequest );
+            Reservation createdReservation = _reservationService.Create( domainRequest );
 
             return CreatedAtAction(
                 nameof( GetById ),
@@ -54,11 +58,11 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
         public async Task<ActionResult<IReadOnlyCollection<ReservationResponse>>> GetReservations( [FromQuery] ReservationFilterRequest request )
         {
-            var reservationFilter = request.ToDomainFilter();
+            DomainReservationFilter reservationFilter = request.ToDomainFilter();
 
-            var reservations = await _reservationService.GetAllAsync( reservationFilter );
+            IReadOnlyCollection<Reservation> reservations = await _reservationService.GetAllAsync( reservationFilter );
 
-            var response = reservations.Select( r => r.ToResponse() ).ToList();
+            List<ReservationResponse> response = reservations.Select( r => r.ToResponse() ).ToList();
             return Ok( response );
         }
 
@@ -74,7 +78,7 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         [ProducesResponseType( StatusCodes.Status404NotFound )]
         public async Task<ActionResult<ReservationResponse>> GetById( Guid id )
         {
-            var reservation = await _reservationService.GetByIdAsync( id );
+            Reservation reservation = await _reservationService.GetByIdAsync( id );
             return Ok( reservation.ToResponse() );
         }
 

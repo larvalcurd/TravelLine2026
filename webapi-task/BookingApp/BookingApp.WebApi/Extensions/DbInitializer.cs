@@ -8,9 +8,9 @@ namespace BookingApp.WebApi.Extensions
     {
         public static void InitializeDatabase( this WebApplication app )
         {
-            using var scope = app.Services.CreateScope();
+            using IServiceScope scope = app.Services.CreateScope();
 
-            var dbContext = scope.ServiceProvider.GetRequiredService<BookingDbContext>();
+            BookingDbContext dbContext = scope.ServiceProvider.GetRequiredService<BookingDbContext>();
 
             dbContext.Database.Migrate();
             BookingDbSeeder.Seed( dbContext );

@@ -1,8 +1,8 @@
 using BookingApp.Domain.Entities;
 using BookingApp.WebApi.DTOs.Properties;
 
-using DomainCreatePropertyReq = BookingApp.Domain.Models.CreatePropertyRequest;
-using DomainUpdatePropertyReq = BookingApp.Domain.Models.UpdatePropertyRequest;
+using DomainCreatePropertyRequest = BookingApp.Domain.Models.CreatePropertyRequest;
+using DomainUpdatePropertyRequest = BookingApp.Domain.Models.UpdatePropertyRequest;
 
 
 namespace BookingApp.WebApi.Mappings
@@ -25,9 +25,9 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static DomainCreatePropertyReq ToDomainRequest( this CreatePropertyRequest apiRequest )
+        public static DomainCreatePropertyRequest ToDomainRequest( this CreatePropertyRequest apiRequest )
         {
-            return new DomainCreatePropertyReq
+            return new DomainCreatePropertyRequest
             {
                 Name = apiRequest.Name,
                 Country = apiRequest.Country,
@@ -38,9 +38,9 @@ namespace BookingApp.WebApi.Mappings
             };
         }
 
-        public static DomainUpdatePropertyReq ToDomainRequest( this UpdatePropertyRequest apiRequest )
+        public static DomainUpdatePropertyRequest ToDomainRequest( this UpdatePropertyRequest apiRequest )
         {
-            return new DomainUpdatePropertyReq
+            return new DomainUpdatePropertyRequest
             {
                 Name = apiRequest.Name,
                 Country = apiRequest.Country,

@@ -1,4 +1,5 @@
 using BookingApp.Domain.Interfaces.Services;
+using BookingApp.Domain.Models;
 using BookingApp.WebApi.DTOs.Search;
 using BookingApp.WebApi.Mappings;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,9 @@ namespace BookingApp.WebApi.Controllers.ReservationApi
         [ProducesResponseType( StatusCodes.Status400BadRequest )]
         public async Task<ActionResult<IReadOnlyCollection<SearchAvailabilityResponse>>> Search( [FromQuery] SearchAvailabilityRequest request )
         {
-            var criteria = request.ToDomainCriteria();
-            var options = await searchService.SearchAsync( criteria );
-            var result = options.Select( x => x.ToResponse() ).ToList();
+            SearchAvailabilityCriteria criteria = request.ToDomainCriteria();
+            IReadOnlyCollection<AvailableRoomOption> options = await searchService.SearchAsync( criteria );
+            List<SearchAvailabilityResponse> result = options.Select( x => x.ToResponse() ).ToList();
 
             return Ok( result );
         }
