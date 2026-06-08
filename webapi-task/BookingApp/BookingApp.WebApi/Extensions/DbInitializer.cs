@@ -1,0 +1,19 @@
+using BookingApp.Infrastructure.Foundation;
+using BookingApp.Infrastructure.Foundation.Seed;
+using Microsoft.EntityFrameworkCore;
+
+namespace BookingApp.WebApi.Extensions
+{
+    public static class DbInitializer
+    {
+        public static void InitializeDatabase( this WebApplication app )
+        {
+            using IServiceScope scope = app.Services.CreateScope();
+
+            BookingDbContext dbContext = scope.ServiceProvider.GetRequiredService<BookingDbContext>();
+
+            dbContext.Database.Migrate();
+            BookingDbSeeder.Seed( dbContext );
+        }
+    }
+}

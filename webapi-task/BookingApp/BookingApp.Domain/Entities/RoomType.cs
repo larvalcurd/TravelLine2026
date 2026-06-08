@@ -1,0 +1,39 @@
+namespace BookingApp.Domain.Entities
+{
+    public class RoomType
+    {
+        public Guid Id { get; set; }
+        public Guid PropertyId { get; set; }
+
+        public required string Name { get; set; }
+        public decimal DailyPrice { get; set; }
+        public required string Currency { get; set; }
+
+        public int MinPersonCount { get; set; }
+        public int MaxPersonCount { get; set; }
+        public int TotalRoomsCount { get; set; }
+
+        public List<string> Services { get; set; } = [];
+        public List<string> Amenities { get; set; } = [];
+
+        public void Update(
+            string name,
+            decimal dailyPrice,
+            string currency,
+            int minPersonCount,
+            int maxPersonCount,
+            int totalRoomsCount,
+            List<string> services,
+            List<string> amenities )
+        {
+            Name = name;
+            DailyPrice = dailyPrice;
+            Currency = currency;
+            MinPersonCount = minPersonCount;
+            MaxPersonCount = maxPersonCount;
+            TotalRoomsCount = totalRoomsCount;
+            Services = services;
+            Amenities = amenities;
+        }
+    }
+}
