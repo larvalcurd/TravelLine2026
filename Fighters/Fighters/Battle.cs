@@ -1,12 +1,16 @@
+using Fighters.Models.BattleRadomizer;
 using Fighters.Models.Fighters;
 
 namespace Fighters;
 
-public static class Battle
+public class Battle( IBattleRandomizer randomizer )
 {
     private const int MinInitiativeRoll = 1;
     private const int MaxInitiativeRollExclusive = 21;
-    public static void Start( List<IFighter> fighters )
+
+    private readonly IBattleRandomizer _randomizer = randomizer;
+
+    public void Start( List<IFighter> fighters )
     {
         if ( fighters.Count < 2 )
         {
@@ -39,13 +43,13 @@ public static class Battle
         PrintWinner( aliveFighters );
     }
 
-    private static List<IFighter> GetRoundQueue( List<IFighter> aliveFighters )
+    private List<IFighter> GetRoundQueue( List<IFighter> aliveFighters )
     {
         List<(IFighter fighter, int total)> initiativeRolls = [];
 
         foreach ( IFighter fighter in aliveFighters )
         {
-            int roll = Random.Shared.Next( MinInitiativeRoll, MaxInitiativeRollExclusive );
+            int roll = _randomizer.RollInitiative( MinInitiativeRoll, MaxInitiativeRollExclusive );
             int bonus = fighter.InitiativeBonus;
             int total = roll + bonus;
 
@@ -60,7 +64,7 @@ public static class Battle
     }
 
 
-    private static List<string> ProcessRound( List<IFighter> aliveFighters, List<IFighter> roundQueue )
+    private List<string> ProcessRound( List<IFighter> aliveFighters, List<IFighter> roundQueue )
     {
         List<string> eliminated = [];
 
@@ -72,8 +76,7 @@ public static class Battle
             }
 
             List<IFighter> potentialTargets = [ .. aliveFighters.Where( target => target != fighter ) ];
-
-            IFighter target = potentialTargets[ Random.Shared.Next( potentialTargets.Count ) ];
+            IFighter target = _randomizer.PickRandom( potentialTargets );
 
             AttackReport report = fighter.Attack( target );
             PrintReport( report );

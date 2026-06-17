@@ -1,3 +1,4 @@
+using Fighters.Models.BattleRadomizer;
 using Fighters.Models.Fighters;
 
 namespace Fighters;
@@ -9,7 +10,8 @@ public class Game
 
     public Game()
     {
-        _commandHandler = new CommandHandler( _fighters );
+        IBattleRandomizer randomizer = new BattleRandomizer();
+        _commandHandler = new CommandHandler( randomizer );
     }
 
     public void Run()

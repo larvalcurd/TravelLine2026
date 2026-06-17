@@ -1,4 +1,5 @@
 using Fighters.Models.Armors;
+using Fighters.Models.BattleRadomizer;
 using Fighters.Models.Classes;
 using Fighters.Models.Races;
 using Fighters.Models.Weapons;
@@ -18,6 +19,8 @@ public class Fighter : IFighter
     private IWeapon _weapon;
     private IArmor _armor;
 
+    private readonly IBattleRandomizer _randomizer;
+
     private int TotalDamage => _race.Damage + _fighterClass.Damage + _weapon.Damage;
     private int TotalArmor => _armor.Armor + _race.Armor;
 
@@ -26,18 +29,14 @@ public class Fighter : IFighter
     private const double MinDamageMultiplier = 0.8;
     private const double MaxDamageMultiplier = 1.1;
 
-    private static double GetRandomDamageMultiplier()
-    {
-        return Random.Shared.NextDouble() * ( MaxDamageMultiplier - MinDamageMultiplier ) + MinDamageMultiplier;
-    }
-
-    public Fighter( string name, IRace race, IFighterClass fighterClass, IWeapon weapon, IArmor armor )
+    public Fighter( string name, IRace race, IFighterClass fighterClass, IWeapon weapon, IArmor armor, IBattleRandomizer randomizer )
     {
         Name = name;
         _race = race;
         _fighterClass = fighterClass;
         _weapon = weapon;
         _armor = armor;
+        _randomizer = randomizer;
         InitiativeBonus = race.Initiative + fighterClass.Initiative;
         MaxHealth = race.Health + fighterClass.Health;
         CurrentHealth = MaxHealth;
@@ -46,9 +45,9 @@ public class Fighter : IFighter
     public AttackReport Attack( IFighter target )
     {
         int baseDamage = TotalDamage;
-        double multiplier = GetRandomDamageMultiplier();
+        double multiplier = _randomizer.GetDamageMultiplier( MinDamageMultiplier, MaxDamageMultiplier );
         int finalDamage = ( int )Math.Round( baseDamage * multiplier );
-        bool wasCritical = Random.Shared.NextDouble() < CritChance;
+        bool wasCritical = _randomizer.RollCritical( CritChance );
 
         if ( wasCritical )
         {

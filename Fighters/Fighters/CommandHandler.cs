@@ -1,23 +1,28 @@
+using Fighters.Models.BattleRadomizer;
 using Fighters.Models.Fighters;
 
 namespace Fighters;
 
-public class CommandHandler( List<IFighter> fighters )
+public class CommandHandler( IBattleRandomizer randomizer )
 {
-    private readonly List<IFighter> _fighters = fighters;
+
+    private readonly List<IFighter> _fighters = [];
+    private readonly CharacterCreator _characterCreator = new CharacterCreator( randomizer );
+    private readonly Battle _battle = new Battle( randomizer );
+
 
     public bool Handle( string command )
     {
         switch ( command.ToLower() )
         {
             case "add":
-                IFighter fighter = CharacterCreator.CreateCharacter();
+                IFighter fighter = _characterCreator.CreateCharacter();
                 _fighters.Add( fighter );
                 Console.WriteLine( $"Fighter {fighter.Name} added." );
                 return true;
 
             case "fight":
-                Battle.Start( _fighters );
+                _battle.Start( _fighters );
                 return true;
 
             case "list":
