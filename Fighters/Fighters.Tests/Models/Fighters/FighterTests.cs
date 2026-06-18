@@ -10,12 +10,12 @@ namespace Fighters.Tests.Models.Fighters;
 
 public class FighterTests
 {
-    private Fighter CreateFighter(
+    private static Fighter CreateFighter(
     string name = "TestFighter",
-    int raceArmor = 5,
-    int armor = 5,
-    int raceHealth = 100,
-    int classHealth = 50,
+    int raceArmor = 0,
+    int armor = 0,
+    int raceHealth = 0,
+    int classHealth = 0,
     int raceDamage = 0,
     int classDamage = 0,
     int weaponDamage = 0,
@@ -55,60 +55,55 @@ public class FighterTests
             randomizerToUse );
     }
 
+    private static Mock<IBattleRandomizer> CreateRandomizerMock(
+        double multiplier = 1.0,
+        bool isCritical = false )
+    {
+        var mock = new Mock<IBattleRandomizer>();
+        mock.Setup( x => x.GetDamageMultiplier( It.IsAny<double>(), It.IsAny<double>() ) )
+            .Returns( multiplier );
+        mock.Setup( x => x.RollCritical( It.IsAny<double>() ) )
+            .Returns( isCritical );
+        return mock;
+    }
+
     [Fact]
-    public void Constructor_ValidArguments_SetsName()
+    public void Constructor_WhenValidArguments_SetsName()
     {
         string name = "Aragorn";
-
         var fighter = CreateFighter( name: name );
 
         Assert.Equal( name, fighter.Name );
     }
 
     [Fact]
-    public void Constructor_ValidArguments_CalculatesMaxHealth()
+    public void Constructor_WhenHealthProvided_CalculatesMaxHealth()
     {
         int raceHealth = 100;
         int classHealth = 50;
-        int expectedMaxHealth = raceHealth + classHealth;
-
         var fighter = CreateFighter( raceHealth: raceHealth, classHealth: classHealth );
 
-        Assert.Equal( expectedMaxHealth, fighter.MaxHealth );
+        Assert.Equal( 150, fighter.MaxHealth );
     }
 
     [Fact]
-    public void Constructor_ValidArguments_SetsCurrentHealthToMaxHealth()
+    public void Constructor_WhenMaxHealthPositive_SetsCurrentHealthToMax()
     {
-        var fighter = CreateFighter();
+        var fighter = CreateFighter( raceHealth: 10, classHealth: 10 );
 
         Assert.Equal( fighter.MaxHealth, fighter.CurrentHealth );
     }
 
     [Fact]
-    public void Constructor_ValidArguments_SetsIsAliveTrue()
+    public void Constructor_WhenMaxHealthPositive_SetsIsAliveTrue()
     {
-        var fighter = CreateFighter();
+        var fighter = CreateFighter( raceHealth: 1, classHealth: 1 );
 
         Assert.True( fighter.IsAlive );
     }
 
     [Fact]
-    public void Constructor_ValidArguments_CalculatesInitiativeBonus()
-    {
-        int raceInitiative = 3;
-        int classInitiative = 4;
-        int expectedInitiative = raceInitiative + classInitiative;
-
-        var fighter = CreateFighter(
-            raceInitiative: raceInitiative,
-            classInitiative: classInitiative );
-
-        Assert.Equal( expectedInitiative, fighter.InitiativeBonus );
-    }
-
-    [Fact]
-    public void Constructor_WhenMaxHealthIsZero_FighterIsNotAlive()
+    public void Constructor_WhenMaxHealthZero_SetsIsAliveFalse()
     {
         var fighter = CreateFighter( raceHealth: 0, classHealth: 0 );
 
@@ -118,26 +113,25 @@ public class FighterTests
     }
 
     [Fact]
-    public void Attack_WithRaceClassAndWeaponDamage_ReturnsCorrectBaseDamage()
+    public void Constructor_CalculatesInitiativeBonus()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-        randomizerMock.Setup( x => x.GetDamageMultiplier( It.IsAny<double>(),
-        It.IsAny<double>() ) ).Returns( 1.0 );
-        randomizerMock.Setup( x => x.RollCritical( It.IsAny<double>() ) ).Returns( false );
+        var fighter = CreateFighter( raceInitiative: 3, classInitiative: 4 );
 
+        Assert.Equal( 7, fighter.InitiativeBonus );
+    }
 
+    // ====================
+    // Attack
+    // ====================
+
+    [Fact]
+    public void Attack_WithBaseDamage_CalculatesCorrectBaseDamage()
+    {
+        var randomizerMock = CreateRandomizerMock( multiplier: 1.0, isCritical: false );
         var attacker = CreateFighter(
-            raceDamage: 10,
-            classDamage: 15,
-            weaponDamage: 20, // baseDamage = 10+15+20 = 45
-            randomizer: randomizerMock.Object
-        );
-
-        var target = CreateFighter(
-            name: "Enemy",
-            raceArmor: 0,
-            armor: 0
-        );
+            raceDamage: 10, classDamage: 15, weaponDamage: 20,
+            randomizer: randomizerMock.Object );
+        var target = CreateFighter( name: "Enemy", raceArmor: 0, armor: 0 );
 
         AttackReport report = attacker.Attack( target );
 
@@ -148,32 +142,13 @@ public class FighterTests
     }
 
     [Fact]
-    public void Attack_AppliesDamageMultiplierToBaseDamage()
+    public void Attack_WithMultiplier_AppliesMultiplierToBaseDamage()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-
-        randomizerMock
-            .Setup( x => x.GetDamageMultiplier(
-                It.IsAny<double>(),
-                It.IsAny<double>() ) )
-            .Returns( 0.9 );
-
-        randomizerMock
-            .Setup( x => x.RollCritical( It.IsAny<double>() ) )
-            .Returns( false );
-
+        var randomizerMock = CreateRandomizerMock( multiplier: 0.9, isCritical: false );
         var attacker = CreateFighter(
-            raceDamage: 10,
-            classDamage: 20,
-            weaponDamage: 20, // baseDamage = 10+20+20 = 50
-            randomizer: randomizerMock.Object
-        );
-
-        var target = CreateFighter(
-            name: "Enemy",
-            raceArmor: 0,
-            armor: 0
-        );
+            raceDamage: 10, classDamage: 20, weaponDamage: 20,
+            randomizer: randomizerMock.Object );
+        var target = CreateFighter( name: "Enemy", raceArmor: 0, armor: 0 );
 
         var report = attacker.Attack( target );
 
@@ -183,32 +158,13 @@ public class FighterTests
     }
 
     [Fact]
-    public void Attack_WhenCritical_DoublesFinalDamage()
+    public void Attack_WithCriticalHit_DoublesFinalDamage()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-
-        randomizerMock
-            .Setup( x => x.GetDamageMultiplier(
-                It.IsAny<double>(),
-                It.IsAny<double>() ) )
-            .Returns( 1.0 );
-
-        randomizerMock
-            .Setup( x => x.RollCritical( It.IsAny<double>() ) )
-            .Returns( true );
-
+        var randomizerMock = CreateRandomizerMock( multiplier: 1.0, isCritical: true );
         var attacker = CreateFighter(
-            raceDamage: 10,
-            classDamage: 20,
-            weaponDamage: 20,
-            randomizer: randomizerMock.Object
-        );
-
-        var target = CreateFighter(
-            name: "Enemy",
-            raceArmor: 0,
-            armor: 0
-        );
+            raceDamage: 10, classDamage: 20, weaponDamage: 20,
+            randomizer: randomizerMock.Object );
+        var target = CreateFighter( name: "Enemy", raceArmor: 0, armor: 0 );
 
         var report = attacker.Attack( target );
 
@@ -219,32 +175,13 @@ public class FighterTests
     }
 
     [Fact]
-    public void Attack_WhenNotCritical_DoesNotDoubleDamage()
+    public void Attack_WithNoCritical_DoesNotDouble()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-
-        randomizerMock
-            .Setup( x => x.GetDamageMultiplier(
-                It.IsAny<double>(),
-                It.IsAny<double>() ) )
-            .Returns( 1.0 );
-
-        randomizerMock
-            .Setup( x => x.RollCritical( It.IsAny<double>() ) )
-            .Returns( false );
-
+        var randomizerMock = CreateRandomizerMock( multiplier: 1.0, isCritical: false );
         var attacker = CreateFighter(
-            raceDamage: 10,
-            classDamage: 20,
-            weaponDamage: 20,
-            randomizer: randomizerMock.Object
-        );
-
-        var target = CreateFighter(
-            name: "Enemy",
-            raceArmor: 0,
-            armor: 0
-        );
+            raceDamage: 10, classDamage: 20, weaponDamage: 20,
+            randomizer: randomizerMock.Object );
+        var target = CreateFighter( name: "Enemy", raceArmor: 0, armor: 0 );
 
         var report = attacker.Attack( target );
 
@@ -255,31 +192,40 @@ public class FighterTests
     }
 
     [Fact]
-    public void Attack_CallsTargetTakeDamageWithCorrectValue()
+    public void Attack_WithCriticalAndMultiplier_AppliesBoth()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-        randomizerMock.Setup( x => x.GetDamageMultiplier( It.IsAny<double>(), It.IsAny<double>() ) ).Returns( 1.0 );
-        randomizerMock.Setup( x => x.RollCritical( It.IsAny<double>() ) ).Returns( false );
-
+        var randomizerMock = CreateRandomizerMock( multiplier: 0.9, isCritical: true );
         var attacker = CreateFighter(
-            raceDamage: 10,
-            classDamage: 20,
-            weaponDamage: 20,
-            randomizer: randomizerMock.Object
-        );
+            raceDamage: 50,
+            randomizer: randomizerMock.Object );
+        var target = CreateFighter( name: "Enemy", raceArmor: 0, armor: 0 );
 
-        int expectedDamage = 50;
+        var report = attacker.Attack( target );
 
-        var targetMock = new Mock<IFighter>();
-        targetMock.Setup( x => x.TakeDamage( It.IsAny<int>() ) ).Returns( ( int damage ) => damage );
-
-        attacker.Attack( targetMock.Object );
-
-        targetMock.Verify( x => x.TakeDamage( expectedDamage ), Times.Once );
+        Assert.Equal( 50, report.BaseDamage );
+        Assert.Equal( 0.9, report.Multiplier );
+        Assert.Equal( 90, report.DamageDealt );
+        Assert.True( report.IsCritical );
     }
 
     [Fact]
-    public void Attack_ReportContainsCorrectNames()
+    public void Attack_CallsTakeDamageWithExpectedDamage()
+    {
+        var randomizerMock = CreateRandomizerMock( multiplier: 1.0, isCritical: false );
+        var attacker = CreateFighter(
+            raceDamage: 10, classDamage: 20, weaponDamage: 20,
+            randomizer: randomizerMock.Object );
+
+        var targetMock = new Mock<IFighter>();
+        targetMock.Setup( x => x.TakeDamage( It.IsAny<int>() ) ).Returns( ( int d ) => d );
+
+        attacker.Attack( targetMock.Object );
+
+        targetMock.Verify( x => x.TakeDamage( 50 ), Times.Once );
+    }
+
+    [Fact]
+    public void Attack_ReportContainsNames()
     {
         var attacker = CreateFighter( name: "Hero" );
         var targetMock = new Mock<IFighter>();
@@ -292,27 +238,12 @@ public class FighterTests
     }
 
     [Fact]
-    public void Attack_ReportContainsActualDamageFromTarget()
+    public void Attack_ReturnsActualDamageFromTarget()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-
-        randomizerMock
-            .Setup( x => x.GetDamageMultiplier(
-                It.IsAny<double>(),
-                It.IsAny<double>() ) )
-            .Returns( 1.0 );
-
-        randomizerMock
-            .Setup( x => x.RollCritical( It.IsAny<double>() ) )
-            .Returns( false );
-
-        var attacker = CreateFighter(
-            raceDamage: 50,
-            randomizer: randomizerMock.Object
-        );
+        var randomizerMock = CreateRandomizerMock( multiplier: 1.0, isCritical: false );
+        var attacker = CreateFighter( raceDamage: 50, randomizer: randomizerMock.Object );
 
         var targetMock = new Mock<IFighter>();
-
         targetMock.SetupGet( x => x.Name ).Returns( "Enemy" );
         targetMock.Setup( x => x.TakeDamage( 50 ) ).Returns( 30 );
         targetMock.SetupGet( x => x.IsAlive ).Returns( true );
@@ -323,27 +254,12 @@ public class FighterTests
     }
 
     [Fact]
-    public void Attack_WhenTargetDies_ReportShowsTargetKilled()
+    public void Attack_WhenTargetDies_ReportShowsKilled()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-
-        randomizerMock
-            .Setup( x => x.GetDamageMultiplier(
-                It.IsAny<double>(),
-                It.IsAny<double>() ) )
-            .Returns( 1.0 );
-
-        randomizerMock
-            .Setup( x => x.RollCritical( It.IsAny<double>() ) )
-            .Returns( false );
-
-        var attacker = CreateFighter(
-            raceDamage: 50,
-            randomizer: randomizerMock.Object
-        );
+        var randomizerMock = CreateRandomizerMock( multiplier: 1.0, isCritical: false );
+        var attacker = CreateFighter( raceDamage: 50, randomizer: randomizerMock.Object );
 
         var targetMock = new Mock<IFighter>();
-
         targetMock.SetupGet( x => x.Name ).Returns( "Enemy" );
         targetMock.Setup( x => x.TakeDamage( 50 ) ).Returns( 50 );
         targetMock.SetupGet( x => x.IsAlive ).Returns( false );
@@ -354,27 +270,12 @@ public class FighterTests
     }
 
     [Fact]
-    public void Attack_WhenTargetSurvives_ReportShowsTargetAlive()
+    public void Attack_WhenTargetSurvives_ReportShowsAlive()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-
-        randomizerMock
-            .Setup( x => x.GetDamageMultiplier(
-                It.IsAny<double>(),
-                It.IsAny<double>() ) )
-            .Returns( 1.0 );
-
-        randomizerMock
-            .Setup( x => x.RollCritical( It.IsAny<double>() ) )
-            .Returns( false );
-
-        var attacker = CreateFighter(
-            raceDamage: 50,
-            randomizer: randomizerMock.Object
-        );
+        var randomizerMock = CreateRandomizerMock( multiplier: 1.0, isCritical: false );
+        var attacker = CreateFighter( raceDamage: 50, randomizer: randomizerMock.Object );
 
         var targetMock = new Mock<IFighter>();
-
         targetMock.SetupGet( x => x.Name ).Returns( "Enemy" );
         targetMock.Setup( x => x.TakeDamage( 50 ) ).Returns( 50 );
         targetMock.SetupGet( x => x.IsAlive ).Returns( true );
@@ -387,172 +288,128 @@ public class FighterTests
     [Fact]
     public void Attack_Integration_RealFighterAttacksRealFighter()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-        randomizerMock.Setup( x => x.GetDamageMultiplier(
-            It.IsAny<double>(), It.IsAny<double>() ) ).Returns( 1.0 );
-        randomizerMock.Setup( x => x.RollCritical(
-            It.IsAny<double>() ) ).Returns( false );
-
+        var randomizerMock = CreateRandomizerMock( multiplier: 1.0, isCritical: false );
         var attacker = CreateFighter(
             name: "Warrior",
-            raceDamage: 10,
-            classDamage: 20,
-            weaponDamage: 20, // baseDamage = 50
-            randomizer: randomizerMock.Object
-        );
+            raceDamage: 10, classDamage: 20, weaponDamage: 20,
+            randomizer: randomizerMock.Object );
 
         var target = CreateFighter(
             name: "Enemy",
-            raceHealth: 100,
-            classHealth: 50, // MaxHealth = 150
-            raceArmor: 5,
-            armor: 5 // TotalArmor = 10
-        );
+            raceHealth: 100, classHealth: 50,   // MaxHealth = 150
+            raceArmor: 5, armor: 5 );           // TotalArmor = 10
 
         var report = attacker.Attack( target );
 
-        // finalDamage = 50, armor = 10, actualDamage = 40
+        // baseDamage=50, multiplier=1.0, finalDamage=50, armor=10 -> actual=40
         Assert.Equal( 50, report.BaseDamage );
         Assert.Equal( 40, report.DamageDealt );
-        Assert.Equal( 110, target.CurrentHealth ); // 150 - 40
+        Assert.Equal( 110, target.CurrentHealth );
         Assert.True( target.IsAlive );
         Assert.False( report.DefenderDied );
         Assert.Equal( "Warrior", report.AttackerName );
         Assert.Equal( "Enemy", report.DefenderName );
     }
 
+    // ====================
+    // TakeDamage
+    // ====================
+
     [Fact]
-    public void Attack_CriticalWithMultiplier_AppliesBothCorrectly()
+    public void TakeDamage_WhenDamageExceedsArmor_ReducesHealth()
     {
-        var randomizerMock = new Mock<IBattleRandomizer>();
-        randomizerMock.Setup( x => x.GetDamageMultiplier(
-            It.IsAny<double>(), It.IsAny<double>() ) ).Returns( 0.9 );
-        randomizerMock.Setup( x => x.RollCritical(
-            It.IsAny<double>() ) ).Returns( true );
+        // MaxHealth=150, Armor=10
+        var fighter = CreateFighter( raceHealth: 100, classHealth: 50,
+                                    raceArmor: 5, armor: 5 );
+        fighter.TakeDamage( 50 );
 
-        var attacker = CreateFighter(
-            raceDamage: 50,
-            randomizer: randomizerMock.Object
-        );
-
-        var target = CreateFighter( raceArmor: 0, armor: 0 );
-
-        var report = attacker.Attack( target );
-
-        Assert.Equal( 50, report.BaseDamage );
-        Assert.Equal( 0.9, report.Multiplier );
-        Assert.Equal( 90, report.DamageDealt );
-        Assert.True( report.IsCritical );
+        Assert.Equal( 110, fighter.CurrentHealth ); // 150 - (50-10)
     }
 
     [Fact]
-    public void TakeDamage_DamageGreaterThanArmor_ReducesHealth()
+    public void TakeDamage_WhenDamageEqualsArmor_HealthUnchanged()
     {
-        var fighter = CreateFighter(); // MaxHealth=150, TotalArmor=10
-        int damage = 50;
-        int expectedHealth = 150 - ( 50 - 10 ); // 150 - 40 = 110
+        var fighter = CreateFighter( raceHealth: 100, classHealth: 50,
+                                    raceArmor: 5, armor: 5 );
+        fighter.TakeDamage( 10 );
 
-
-        fighter.TakeDamage( damage );
-
-        Assert.Equal( expectedHealth, fighter.CurrentHealth );
+        Assert.Equal( 150, fighter.CurrentHealth );
     }
 
     [Fact]
-    public void TakeDamage_DamageEqualsArmor_DoesNotReduceHealth()
+    public void TakeDamage_WhenDamageLessThanArmor_HealthUnchanged()
     {
-        var fighter = CreateFighter(); // MaxHealth=150, TotalArmor=10
-        int damage = 10;
-        int expectedHealth = 150; // damage = TotalArmor => armor blocks damage
+        var fighter = CreateFighter( raceHealth: 100, classHealth: 50,
+                                    raceArmor: 5, armor: 5 );
+        fighter.TakeDamage( 4 );
 
-        fighter.TakeDamage( damage );
-
-        Assert.Equal( expectedHealth, fighter.CurrentHealth );
+        Assert.Equal( 150, fighter.CurrentHealth );
     }
 
     [Fact]
-    public void TakeDamage_DamageLessThanArmor_DoesNotReduceHealth()
+    public void TakeDamage_WhenDamageExceedsHealth_HealthBecomesZero()
     {
-        var fighter = CreateFighter(); // MaxHealth=150, TotalArmor=10
-        int damage = 4;
-        int expectedHealth = 150; // damage < TotalArmor => armor blocks damage
+        var fighter = CreateFighter( raceHealth: 100, classHealth: 50,
+                                    raceArmor: 5, armor: 5 );
+        fighter.TakeDamage( 999 );
 
-        fighter.TakeDamage( damage );
-
-        Assert.Equal( expectedHealth, fighter.CurrentHealth );
+        Assert.Equal( 0, fighter.CurrentHealth );
     }
 
     [Fact]
-    public void TakeDamage_DamageExceedsHealth_HealthBecomesZero()
+    public void TakeDamage_ReturnsActualDamageTaken()
     {
-        var fighter = CreateFighter(); // MaxHealth=150, TotalArmor=10
-        int damage = 999;
-        int expectedHealth = 0;
+        var fighter = CreateFighter( raceHealth: 100, classHealth: 50,
+                                    raceArmor: 5, armor: 5 );
+        int actualDamage = fighter.TakeDamage( 15 );
 
-        fighter.TakeDamage( damage );
-
-        Assert.Equal( expectedHealth, fighter.CurrentHealth );
+        Assert.Equal( 5, actualDamage ); // 15 - 10
+        Assert.Equal( 145, fighter.CurrentHealth );
     }
 
     [Fact]
-    public void TakeDamage_AnyDamage_ReturnsActualDamageTaken()
+    public void TakeDamage_WhenFullyBlocked_ReturnsZero()
     {
-        var fighter = CreateFighter(); // MaxHealth=150, TotalArmor=10
-        int damage = 15;
-        int expectedDamageTaken = damage - 10; // 15 - 10 = 5 
-        int expectedHealth = 150 - expectedDamageTaken; // 150 - 5 = 145
+        var fighter = CreateFighter( raceHealth: 100, classHealth: 50,
+                                    raceArmor: 5, armor: 5 );
+        int actualDamage = fighter.TakeDamage( 3 );
 
-        int actualDamage = fighter.TakeDamage( damage );
-
-        Assert.Equal( expectedDamageTaken, actualDamage );
-        Assert.Equal( expectedHealth, fighter.CurrentHealth );
+        Assert.Equal( 0, actualDamage );
     }
 
     [Fact]
-    public void TakeDamage_DamageBlockedByArmor_ReturnsZero()
+    public void TakeDamage_WhenLethal_SetsIsAliveFalse()
     {
-        var fighter = CreateFighter(); // MaxHealth=150, TotalArmor=10
-        int damage = 3; // damage < TotalArmor => armor blocks damage
-        int expectedDamageTaken = 0;
-
-        int actualDamage = fighter.TakeDamage( damage );
-
-        Assert.Equal( expectedDamageTaken, actualDamage );
-    }
-
-    [Fact]
-    public void TakeDamage_LethalDamage_FighterDies()
-    {
-        var fighter = CreateFighter(); // MaxHealth=150, TotalArmor=10
-        int lethalDamage = 999; // >> MaxHealth + TotalArmor
-
-        fighter.TakeDamage( lethalDamage );
+        var fighter = CreateFighter( raceHealth: 100, classHealth: 50,
+                                    raceArmor: 5, armor: 5 );
+        fighter.TakeDamage( 999 );
 
         Assert.False( fighter.IsAlive );
     }
 
-    [Fact]
-    public void RestoreHealth_AfterTakingDamage_RestoresMaxHealth()
-    {
-        var fighter = CreateFighter(); // MaxHealth=150, TotalArmor=10
-        int maxHealth = 150;
-        int damage = 15;
+    // ====================
+    // RestoreHealth
+    // ====================
 
-        fighter.TakeDamage( damage );
+    [Fact]
+    public void RestoreHealth_AfterDamage_RestoresToMax()
+    {
+        var fighter = CreateFighter( raceHealth: 100, classHealth: 50,
+                                    raceArmor: 5, armor: 5 );
+        fighter.TakeDamage( 15 );
         fighter.RestoreHealth();
 
-        Assert.Equal( maxHealth, fighter.CurrentHealth );
+        Assert.Equal( 150, fighter.CurrentHealth );
     }
 
     [Fact]
-    public void RestoreHealth_WhenHealthIsFull_NoChanges()
+    public void RestoreHealth_WhenFull_RemainsFull()
     {
-        var fighter = CreateFighter(); // MaxHealth=150, TotalArmor=10
-        int expectedHealth = 150;
-
+        var fighter = CreateFighter( raceHealth: 100, classHealth: 50,
+                                    raceArmor: 5, armor: 5 );
         fighter.RestoreHealth();
 
-        Assert.Equal( expectedHealth, fighter.CurrentHealth );
+        Assert.Equal( 150, fighter.CurrentHealth );
     }
 
 }
