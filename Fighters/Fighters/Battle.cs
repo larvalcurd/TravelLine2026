@@ -1,20 +1,22 @@
+using Fighters.Models;
 using Fighters.Models.BattleRadomizer;
 using Fighters.Models.Fighters;
 
 namespace Fighters;
 
-public class Battle( IBattleRandomizer randomizer )
+public class Battle( IBattleRandomizer randomizer, IGameOutput output )
 {
     private const int MinInitiativeRoll = 1;
     private const int MaxInitiativeRollExclusive = 21;
 
     private readonly IBattleRandomizer _randomizer = randomizer;
+    private readonly IGameOutput _output = output;
 
     public void Start( List<IFighter> fighters )
     {
         if ( fighters.Count < 2 )
         {
-            Console.WriteLine( "At least 2 fighters are required to start a fight." );
+            _output.WriteLine( "At least 2 fighters are required to start a fight." );
             return;
         }
 
@@ -26,11 +28,11 @@ public class Battle( IBattleRandomizer randomizer )
 
         while ( aliveFighters.Count > 1 )
         {
-            Console.WriteLine( $"\n===== Round {round} =====" );
+            _output.WriteLine( $"\n===== Round {round} =====" );
 
             List<IFighter> roundQueue = GetRoundQueue( aliveFighters );
 
-            Console.WriteLine( "Initiative order: " + string.Join( ", ", roundQueue.Select( f => f.Name ) ) );
+            _output.WriteLine( "Initiative order: " + string.Join( ", ", roundQueue.Select( f => f.Name ) ) );
 
             List<string> eliminated = ProcessRound( aliveFighters, roundQueue );
 
@@ -55,7 +57,7 @@ public class Battle( IBattleRandomizer randomizer )
 
             initiativeRolls.Add( (fighter, total) );
 
-            Console.WriteLine( $"{fighter.Name} rolls initiative: {total} (d20 {roll} + bonus {bonus})" );
+            _output.WriteLine( $"{fighter.Name} rolls initiative: {total} (d20 {roll} + bonus {bonus})" );
         }
 
         return [ .. initiativeRolls
@@ -99,9 +101,9 @@ public class Battle( IBattleRandomizer randomizer )
         }
     }
 
-    private static void PrintFighterStatuses( List<IFighter> fighters )
+    private void PrintFighterStatuses( List<IFighter> fighters )
     {
-        Console.WriteLine( "\nFighter status after the round:" );
+        _output.WriteLine( "\nFighter status after the round:" );
 
         foreach ( IFighter fighter in fighters )
         {
@@ -109,35 +111,35 @@ public class Battle( IBattleRandomizer randomizer )
                 ? $"{fighter.Name}: {fighter.CurrentHealth}/{fighter.MaxHealth} HP"
                 : $"{fighter.Name}: eliminated";
 
-            Console.WriteLine( status );
+            _output.WriteLine( status );
         }
     }
 
-    private static void PrintEliminatedFighters( List<string> eliminated )
+    private void PrintEliminatedFighters( List<string> eliminated )
     {
         foreach ( string name in eliminated )
         {
-            Console.WriteLine( $"--- {name} is eliminated! ---" );
+            _output.WriteLine( $"--- {name} is eliminated! ---" );
         }
     }
 
-    private static void PrintWinner( List<IFighter> aliveFighters )
+    private void PrintWinner( List<IFighter> aliveFighters )
     {
         IFighter winner = aliveFighters[ 0 ];
 
-        Console.WriteLine( $"\nWinner: {winner.Name} with {winner.CurrentHealth}/{winner.MaxHealth} HP!" );
+        _output.WriteLine( $"\nWinner: {winner.Name} with {winner.CurrentHealth}/{winner.MaxHealth} HP!" );
     }
 
-    private static void PrintReport( AttackReport report )
+    private void PrintReport( AttackReport report )
     {
-        Console.WriteLine();
-        Console.WriteLine( $"{report.AttackerName} attacks {report.DefenderName}" );
-        Console.WriteLine( $"Base damage: {report.BaseDamage}" );
-        Console.WriteLine( $"Attack multiplier: {report.Multiplier}" );
+        _output.WriteLine( "" );
+        _output.WriteLine( $"{report.AttackerName} attacks {report.DefenderName}" );
+        _output.WriteLine( $"Base damage: {report.BaseDamage}" );
+        _output.WriteLine( $"Attack multiplier: {report.Multiplier}" );
 
         string critMessage = report.IsCritical ? "CRIT!" : "No crit";
-        Console.WriteLine( critMessage );
+        _output.WriteLine( critMessage );
 
-        Console.WriteLine( $"Damage dealt: {report.DamageDealt}" );
+        _output.WriteLine( $"Damage dealt: {report.DamageDealt}" );
     }
 }

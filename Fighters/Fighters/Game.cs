@@ -1,3 +1,4 @@
+using Fighters.Models;
 using Fighters.Models.BattleRadomizer;
 using Fighters.Models.Fighters;
 
@@ -11,7 +12,8 @@ public class Game
     public Game()
     {
         IBattleRandomizer randomizer = new BattleRandomizer();
-        _commandHandler = new CommandHandler( randomizer );
+        IGameOutput output = new ConsoleGameOutput();
+        _commandHandler = new CommandHandler( randomizer, output );
     }
 
     public void Run()

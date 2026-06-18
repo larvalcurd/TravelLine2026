@@ -1,14 +1,15 @@
+using Fighters.Models;
 using Fighters.Models.BattleRadomizer;
 using Fighters.Models.Fighters;
 
 namespace Fighters;
 
-public class CommandHandler( IBattleRandomizer randomizer )
+public class CommandHandler( IBattleRandomizer randomizer, IGameOutput output )
 {
 
     private readonly List<IFighter> _fighters = [];
     private readonly CharacterCreator _characterCreator = new CharacterCreator( randomizer );
-    private readonly Battle _battle = new Battle( randomizer );
+    private readonly Battle _battle = new Battle( randomizer, output );
 
 
     public bool Handle( string command )
