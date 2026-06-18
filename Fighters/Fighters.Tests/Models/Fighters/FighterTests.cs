@@ -60,10 +60,12 @@ public class FighterTests
         bool isCritical = false )
     {
         var mock = new Mock<IBattleRandomizer>();
-        mock.Setup( x => x.GetDamageMultiplier( It.IsAny<double>(), It.IsAny<double>() ) )
+
+        mock.Setup( x => x.GetDamageMultiplier( 0.8, 1.1 ) )
             .Returns( multiplier );
-        mock.Setup( x => x.RollCritical( It.IsAny<double>() ) )
+        mock.Setup( x => x.RollCritical( 0.2 ) )
             .Returns( isCritical );
+
         return mock;
     }
 
@@ -286,7 +288,7 @@ public class FighterTests
     }
 
     [Fact]
-    public void Attack_Integration_RealFighterAttacksRealFighter()
+    public void Attack_WithRealTargetHavingArmor_ReducesHealthCorrectly()
     {
         var randomizerMock = CreateRandomizerMock( multiplier: 1.0, isCritical: false );
         var attacker = CreateFighter(
