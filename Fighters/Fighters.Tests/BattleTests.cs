@@ -1,6 +1,6 @@
 using Moq;
 using Fighters.Models.Fighters;
-using Fighters.Models.BattleRadomizer;
+using Fighters.Models.BattleRandomizer;
 using Fighters.Models;
 
 namespace Fighters.Tests;

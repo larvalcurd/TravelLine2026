@@ -1,4 +1,4 @@
-namespace Fighters.Models.BattleRadomizer;
+namespace Fighters.Models.BattleRandomizer;
 
 public interface IBattleRandomizer
 {

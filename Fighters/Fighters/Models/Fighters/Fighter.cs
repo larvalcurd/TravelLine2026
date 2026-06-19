@@ -1,5 +1,5 @@
 using Fighters.Models.Armors;
-using Fighters.Models.BattleRadomizer;
+using Fighters.Models.BattleRandomizer;
 using Fighters.Models.Classes;
 using Fighters.Models.Races;
 using Fighters.Models.Weapons;

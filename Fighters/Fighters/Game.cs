@@ -1,5 +1,5 @@
 using Fighters.Models;
-using Fighters.Models.BattleRadomizer;
+using Fighters.Models.BattleRandomizer;
 using Fighters.Models.Fighters;
 
 namespace Fighters;

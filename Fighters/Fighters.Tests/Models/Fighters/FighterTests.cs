@@ -4,7 +4,7 @@ using Fighters.Models.Races;
 using Fighters.Models.Classes;
 using Fighters.Models.Weapons;
 using Fighters.Models.Armors;
-using Fighters.Models.BattleRadomizer;
+using Fighters.Models.BattleRandomizer;
 
 namespace Fighters.Tests.Models.Fighters;
 
