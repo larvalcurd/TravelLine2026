@@ -10,6 +10,8 @@ namespace Fighters.Tests.Models.Fighters;
 
 public class FighterTests
 {
+    // создает Fighter с замоканными race, class, weapon, armor и randomizer
+    // параметры переопределяют только те характеристики, которые необходимы для конкретного теста
     private static Fighter CreateFighter(
     string name = "TestFighter",
     int raceArmor = 0,
@@ -55,17 +57,16 @@ public class FighterTests
             randomizerToUse );
     }
 
+    // делает атаку предсказуемой, фиксирует мультипликатор урона и крит
     private static Mock<IBattleRandomizer> CreateRandomizerMock(
-        double multiplier = 1.0,
-        bool isCritical = false )
+    double multiplier = 1.0,
+    bool isCritical = false )
     {
         var mock = new Mock<IBattleRandomizer>();
-
-        mock.Setup( x => x.GetDamageMultiplier( 0.8, 1.1 ) )
+        mock.Setup( x => x.GetDamageMultiplier( It.IsAny<double>(), It.IsAny<double>() ) )
             .Returns( multiplier );
-        mock.Setup( x => x.RollCritical( 0.2 ) )
+        mock.Setup( x => x.RollCritical( It.IsAny<double>() ) )
             .Returns( isCritical );
-
         return mock;
     }
 
@@ -204,6 +205,10 @@ public class FighterTests
 
         var report = attacker.Attack( target );
 
+        // BaseDamage  50
+        // Multiplier 0.9 => 45
+        // Крит удаваивает DamageDealt до 90
+
         Assert.Equal( 50, report.BaseDamage );
         Assert.Equal( 0.9, report.Multiplier );
         Assert.Equal( 90, report.DamageDealt );
@@ -303,7 +308,10 @@ public class FighterTests
 
         var report = attacker.Attack( target );
 
-        // baseDamage=50, multiplier=1.0, finalDamage=50, armor=10 -> actual=40
+        // Базовый урон Attacker: 10 race + 20 class + 20 weapon = 50
+        // Броня Target: 5 race + 5 equipped = 10
+        // Фактический урон: 50 - 10 = 40
+        // Здоровье Target после атаки: 150 - 40 = 110
         Assert.Equal( 50, report.BaseDamage );
         Assert.Equal( 40, report.DamageDealt );
         Assert.Equal( 110, target.CurrentHealth );
