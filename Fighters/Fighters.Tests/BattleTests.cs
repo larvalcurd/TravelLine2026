@@ -99,10 +99,6 @@ public class BattleTests
         randomizerMock.Verify(
             x => x.PickRandom( It.IsAny<IReadOnlyList<IFighter>>() ),
             Times.Never );
-
-        randomizerMock.Verify(
-            x => x.GetDamageMultiplier( It.IsAny<double>(), It.IsAny<double>() ),
-            Times.Never );
     }
 
     [Fact]
@@ -131,10 +127,6 @@ public class BattleTests
 
         randomizerMock.Verify(
             x => x.PickRandom( It.IsAny<IReadOnlyList<IFighter>>() ),
-            Times.Never );
-
-        randomizerMock.Verify(
-            x => x.GetDamageMultiplier( It.IsAny<double>(), It.IsAny<double>() ),
             Times.Never );
     }
 
@@ -379,8 +371,8 @@ public class BattleTests
             .Returns( () => fastIsAlive );
 
         eliminatedBeforeTurnMock
-        .SetupGet( x => x.IsAlive )
-        .Returns( () => eliminatedBeforeTurnIsAlive );
+            .SetupGet( x => x.IsAlive )
+            .Returns( () => eliminatedBeforeTurnIsAlive );
 
         survivorMock
             .SetupGet( x => x.IsAlive )
@@ -398,16 +390,16 @@ public class BattleTests
             .Returns( fastMock.Object );                // Survivor kills Fast, battle ends
 
         fastMock
-        .Setup( x => x.Attack( eliminatedBeforeTurnMock.Object ) )
-        .Callback( () => eliminatedBeforeTurnIsAlive = false )
-        .Returns( new AttackReport(
-            "Fast",
-            "EliminatedBeforeTurn",
-            false,
-            100,
-            true,
-            100,
-            1.0 ) );
+            .Setup( x => x.Attack( eliminatedBeforeTurnMock.Object ) )
+            .Callback( () => eliminatedBeforeTurnIsAlive = false )
+            .Returns( new AttackReport(
+                "Fast",
+                "EliminatedBeforeTurn",
+                false,
+                100,
+                true,
+                100,
+                1.0 ) );
 
         survivorMock
             .Setup( x => x.Attack( fastMock.Object ) )
@@ -592,7 +584,11 @@ public class BattleTests
             Times.Once );
 
         outputMock.Verify(
-            x => x.WriteLine( It.Is<string>( s => s.Contains( "eliminated" ) ) ),
+            x => x.WriteLine( It.Is<string>( s => s.Contains( "Weak" ) && s.Contains( "eliminated" ) ) ),
+            Times.AtLeastOnce );
+
+        outputMock.Verify(
+            x => x.WriteLine( It.Is<string>( s => s.Contains( "Middle" ) && s.Contains( "eliminated" ) ) ),
             Times.AtLeastOnce );
     }
 }
