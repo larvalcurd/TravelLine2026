@@ -188,20 +188,157 @@ public class BattleTests
             Times.Exactly( 2 ) );
     }
 
-    // [Fact]
-    // public void Start_FightersHaveDifferentInitiative_AttacksInInitiativeOrder()
+    [Fact]
+    public void Start_FightersHaveDifferentInitiative_AttacksInInitiativeOrder()
+    {
+        var attackOrder = new List<string>();
+
+        var randomizerMock = new Mock<IBattleRandomizer>();
+
+        randomizerMock
+            .SetupSequence( x => x.RollInitiative( It.IsAny<int>(), It.IsAny<int>() ) )
+            .Returns( 10 )  // Medium
+            .Returns( 15 )  // Fastest
+            .Returns( 5 );  // Slowest
+
+        randomizerMock
+            .Setup( x => x.GetDamageMultiplier( It.IsAny<double>(), It.IsAny<double>() ) )
+            .Returns( 1.0 );
+
+        randomizerMock
+            .Setup( x => x.RollCritical( It.IsAny<double>() ) )
+            .Returns( false );
+
+        var outputMock = CreateOutputMock();
+        var battle = new Battle( randomizerMock.Object, outputMock.Object );
+
+        var fighter1Mock = CreateFighterMock( "Medium", initiativeBonus: 0 );
+        var fighter2Mock = CreateFighterMock( "Fastest", initiativeBonus: 5 );
+        var fighter3Mock = CreateFighterMock( "Slowest", initiativeBonus: 0 );
+
+        var slowestIsAlive = true;
+        fighter3Mock.SetupGet( x => x.IsAlive ).Returns( () => slowestIsAlive );
+
+        var fastestIsAlive = true;
+        fighter2Mock.SetupGet( x => x.IsAlive ).Returns( () => fastestIsAlive );
+
+        // контроллируем, кто кого атакует
+        randomizerMock
+            .SetupSequence( x => x.PickRandom( It.IsAny<IReadOnlyList<IFighter>>() ) )
+            .Returns( fighter3Mock.Object )  // Fastest targets Slowest
+            .Returns( fighter2Mock.Object ); // Medium targets Fastest
+
+        fighter1Mock
+            .Setup( x => x.Attack( It.IsAny<IFighter>() ) )
+            .Callback( () =>
+            {
+                attackOrder.Add( "Medium" );
+                fastestIsAlive = false;
+            } )
+            .Returns( ( IFighter target ) => new AttackReport(
+                "Medium",
+                target.Name,
+                false,
+                100,
+                true,
+                100,
+                1.0
+            ) );
+
+        fighter2Mock
+            .Setup( x => x.Attack( It.IsAny<IFighter>() ) )
+            .Callback( () =>
+            {
+                attackOrder.Add( "Fastest" );
+                slowestIsAlive = false;
+            } )
+            .Returns( ( IFighter target ) => new AttackReport(
+                "Fastest",
+                target.Name,
+                false,
+                100,
+                true,
+                100,
+                1.0
+            ) );
+
+        fighter3Mock
+            .Setup( x => x.Attack( It.IsAny<IFighter>() ) )
+            .Callback( () => attackOrder.Add( "Slowest" ) )
+            .Returns( ( IFighter target ) => new AttackReport(
+                "Slowest",
+                target.Name,
+                false,
+                10,
+                false,
+                10,
+                1.0
+            ) );
+
+        var fighters = new List<IFighter>
+        {
+            fighter1Mock.Object,
+            fighter2Mock.Object,
+            fighter3Mock.Object
+        };
+
+        battle.Start( fighters );
+
+        // две атаки, медленный не успел атаковать
+        Assert.Equal( 2, attackOrder.Count );
+        Assert.Equal( "Fastest", attackOrder[ 0 ] );
+        Assert.Equal( "Medium", attackOrder[ 1 ] );
+    }
 
     // [Fact]
     // public void Start_WhenFighterActs_PicksTargetFromOtherAliveFighters()
 
-    // [Fact]
-    // public void Start_WhenTargetDies_RemovesTargetAndPrintsElimination()
+    [Fact]
+    public void Start_WhenTargetDies_RemovesTargetAndPrintsElimination()
+    {
+        var randomizerMock = CreateRandomizerMock();
+        var outputMock = CreateOutputMock();
+        var battle = new Battle( randomizerMock.Object, outputMock.Object );
+
+        var (winnerMock, loserMock) = CreateQuickBattleFighters();
+        var fighters = new List<IFighter> { winnerMock.Object, loserMock.Object };
+
+        battle.Start( fighters );
+
+        outputMock.Verify(
+            x => x.WriteLine( It.Is<string>( s => s.Contains( "eliminated!" ) ) ),
+            Times.Once );
+
+        outputMock.Verify(
+            x => x.WriteLine( It.Is<string>( s => s.Contains( "Weak" ) ) ),
+            Times.AtLeastOnce );
+    }
 
     // [Fact]
     // public void Start_WhenFighterWasEliminatedBeforeTurn_DoesNotAllowItToAttack()
 
-    // [Fact]
-    // public void Start_WhenOnlyOneFighterRemains_PrintsWinner()
+    [Fact]
+    public void Start_WhenOnlyOneFighterRemains_PrintsWinner()
+    {
+        var randomizerMock = CreateRandomizerMock();
+        var outputMock = CreateOutputMock();
+        var battle = new Battle( randomizerMock.Object, outputMock.Object );
+
+        var (winnerMock, loserMock) = CreateQuickBattleFighters();
+        var fighters = new List<IFighter> { winnerMock.Object, loserMock.Object };
+
+        battle.Start( fighters );
+
+        outputMock.Verify(
+             x => x.WriteLine( It.Is<string>( s => s.Contains( "Winner:" ) ) ),
+             Times.Once
+        );
+
+        outputMock.Verify(
+            x => x.WriteLine( It.Is<string>( s => s.Contains( "Strong" ) ) ),
+            Times.AtLeastOnce
+        );
+    }
 
     // [Fact]
     // public void Start_WithThreeFighters_ContinuesUntilSingleWinnerRemains()
