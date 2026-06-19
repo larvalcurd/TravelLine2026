@@ -1,5 +1,6 @@
 using Fighters.Models;
 using Fighters.Models.Armors;
+using Fighters.Models.BattleRandomizer;
 using Fighters.Models.Classes;
 using Fighters.Models.Fighters;
 using Fighters.Models.Races;
@@ -7,9 +8,11 @@ using Fighters.Models.Weapons;
 
 namespace Fighters;
 
-public static class CharacterCreator
+public class CharacterCreator( IBattleRandomizer randomizer )
 {
-    public static IFighter CreateCharacter()
+    private readonly IBattleRandomizer _randomizer = randomizer;
+
+    public IFighter CreateCharacter()
     {
         string name = ConsoleHelper.ReadRequiredString( "Enter your character's name:" );
 
@@ -23,7 +26,8 @@ public static class CharacterCreator
             selectedRace,
             selectedClass,
             selectedWeapon,
-            selectedArmor );
+            selectedArmor,
+            _randomizer );
     }
 
     private static T SelectItem<T>( string label, T[] items ) where T : INamed

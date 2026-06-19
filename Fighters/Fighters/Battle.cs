@@ -1,16 +1,22 @@
+using Fighters.Models;
+using Fighters.Models.BattleRandomizer;
 using Fighters.Models.Fighters;
 
 namespace Fighters;
 
-public static class Battle
+public class Battle( IBattleRandomizer randomizer, IGameOutput output )
 {
     private const int MinInitiativeRoll = 1;
     private const int MaxInitiativeRollExclusive = 21;
-    public static void Start( List<IFighter> fighters )
+
+    private readonly IBattleRandomizer _randomizer = randomizer;
+    private readonly IGameOutput _output = output;
+
+    public void Start( List<IFighter> fighters )
     {
         if ( fighters.Count < 2 )
         {
-            Console.WriteLine( "At least 2 fighters are required to start a fight." );
+            _output.WriteLine( "At least 2 fighters are required to start a fight." );
             return;
         }
 
@@ -22,11 +28,11 @@ public static class Battle
 
         while ( aliveFighters.Count > 1 )
         {
-            Console.WriteLine( $"\n===== Round {round} =====" );
+            _output.WriteLine( $"\n===== Round {round} =====" );
 
             List<IFighter> roundQueue = GetRoundQueue( aliveFighters );
 
-            Console.WriteLine( "Initiative order: " + string.Join( ", ", roundQueue.Select( f => f.Name ) ) );
+            _output.WriteLine( "Initiative order: " + string.Join( ", ", roundQueue.Select( f => f.Name ) ) );
 
             List<string> eliminated = ProcessRound( aliveFighters, roundQueue );
 
@@ -39,19 +45,19 @@ public static class Battle
         PrintWinner( aliveFighters );
     }
 
-    private static List<IFighter> GetRoundQueue( List<IFighter> aliveFighters )
+    private List<IFighter> GetRoundQueue( List<IFighter> aliveFighters )
     {
         List<(IFighter fighter, int total)> initiativeRolls = [];
 
         foreach ( IFighter fighter in aliveFighters )
         {
-            int roll = Random.Shared.Next( MinInitiativeRoll, MaxInitiativeRollExclusive );
+            int roll = _randomizer.RollInitiative( MinInitiativeRoll, MaxInitiativeRollExclusive );
             int bonus = fighter.InitiativeBonus;
             int total = roll + bonus;
 
             initiativeRolls.Add( (fighter, total) );
 
-            Console.WriteLine( $"{fighter.Name} rolls initiative: {total} (d20 {roll} + bonus {bonus})" );
+            _output.WriteLine( $"{fighter.Name} rolls initiative: {total} (d20 {roll} + bonus {bonus})" );
         }
 
         return [ .. initiativeRolls
@@ -60,7 +66,7 @@ public static class Battle
     }
 
 
-    private static List<string> ProcessRound( List<IFighter> aliveFighters, List<IFighter> roundQueue )
+    private List<string> ProcessRound( List<IFighter> aliveFighters, List<IFighter> roundQueue )
     {
         List<string> eliminated = [];
 
@@ -72,8 +78,7 @@ public static class Battle
             }
 
             List<IFighter> potentialTargets = [ .. aliveFighters.Where( target => target != fighter ) ];
-
-            IFighter target = potentialTargets[ Random.Shared.Next( potentialTargets.Count ) ];
+            IFighter target = _randomizer.PickRandom( potentialTargets );
 
             AttackReport report = fighter.Attack( target );
             PrintReport( report );
@@ -96,9 +101,9 @@ public static class Battle
         }
     }
 
-    private static void PrintFighterStatuses( List<IFighter> fighters )
+    private void PrintFighterStatuses( List<IFighter> fighters )
     {
-        Console.WriteLine( "\nFighter status after the round:" );
+        _output.WriteLine( "\nFighter status after the round:" );
 
         foreach ( IFighter fighter in fighters )
         {
@@ -106,35 +111,35 @@ public static class Battle
                 ? $"{fighter.Name}: {fighter.CurrentHealth}/{fighter.MaxHealth} HP"
                 : $"{fighter.Name}: eliminated";
 
-            Console.WriteLine( status );
+            _output.WriteLine( status );
         }
     }
 
-    private static void PrintEliminatedFighters( List<string> eliminated )
+    private void PrintEliminatedFighters( List<string> eliminated )
     {
         foreach ( string name in eliminated )
         {
-            Console.WriteLine( $"--- {name} is eliminated! ---" );
+            _output.WriteLine( $"--- {name} is eliminated! ---" );
         }
     }
 
-    private static void PrintWinner( List<IFighter> aliveFighters )
+    private void PrintWinner( List<IFighter> aliveFighters )
     {
         IFighter winner = aliveFighters[ 0 ];
 
-        Console.WriteLine( $"\nWinner: {winner.Name} with {winner.CurrentHealth}/{winner.MaxHealth} HP!" );
+        _output.WriteLine( $"\nWinner: {winner.Name} with {winner.CurrentHealth}/{winner.MaxHealth} HP!" );
     }
 
-    private static void PrintReport( AttackReport report )
+    private void PrintReport( AttackReport report )
     {
-        Console.WriteLine();
-        Console.WriteLine( $"{report.AttackerName} attacks {report.DefenderName}" );
-        Console.WriteLine( $"Base damage: {report.BaseDamage}" );
-        Console.WriteLine( $"Attack multiplier: {report.Multiplier}" );
+        _output.WriteLine( "" );
+        _output.WriteLine( $"{report.AttackerName} attacks {report.DefenderName}" );
+        _output.WriteLine( $"Base damage: {report.BaseDamage}" );
+        _output.WriteLine( $"Attack multiplier: {report.Multiplier}" );
 
         string critMessage = report.IsCritical ? "CRIT!" : "No crit";
-        Console.WriteLine( critMessage );
+        _output.WriteLine( critMessage );
 
-        Console.WriteLine( $"Damage dealt: {report.DamageDealt}" );
+        _output.WriteLine( $"Damage dealt: {report.DamageDealt}" );
     }
 }
